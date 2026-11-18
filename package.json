@@ -1,0 +1,11 @@
+{
+  "name": "uroatlas-penis-medisch",
+  "version": "1.0.0",
+  "description": "UroAtlas: Visuele medische anatomie-, hemodynamica- en urologiewebapp",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve .",
+    "check": "node --check data.js && node --check app.js"
+  },
+  "license": "MIT"
+}

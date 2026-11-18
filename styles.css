@@ -1,0 +1,1696 @@
+/* ==========================================================================
+   UroAtlas — Moderne Medische Styling & Toegankelijke UI
+   Volgt modern-web-guidance: dark-mode, tabs, dialog, light-dismiss, brand-consistent-forms
+   ========================================================================== */
+
+@property --fade-start {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fade-end {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+:root {
+  /* Raw color tokens: Light & Dark */
+  --bg-light: #f4f7fb;
+  --bg-dark: #0b1220;
+
+  --surface-card-light: #ffffff;
+  --surface-card-dark: #111c30;
+
+  --surface-inset-light: #eef3f9;
+  --surface-inset-dark: #0e1729;
+
+  --surface-elevated-light: #f8fafc;
+  --surface-elevated-dark: #16233b;
+
+  --text-light: #0f172a;
+  --text-dark: #eef4ff;
+
+  --text-muted-light: #475569;
+  --text-muted-dark: #94a3b8;
+
+  --border-subtle-light: #d7e1ee;
+  --border-subtle-dark: #23334d;
+
+  --border-strong-light: #94a3b8;
+  --border-strong-dark: #475569;
+
+  /* Brand accent (>= 3:1 contrast in beide modi) */
+  --accent-light: #0369a1;
+  --accent-dark: #38bdf8;
+  --accent-text-light: #ffffff;
+  --accent-text-dark: #041322;
+
+  /* Anatomische categoriekleuren */
+  --cat-erectile-light: #be185d;
+  --cat-erectile-dark: #f472b6;
+  --cat-vascular-light: #dc2626;
+  --cat-vascular-dark: #f87171;
+  --cat-venous-light: #1d4ed8;
+  --cat-venous-dark: #60a5fa;
+  --cat-neural-light: #b45309;
+  --cat-neural-dark: #fbbf24;
+  --cat-fascia-light: #334155;
+  --cat-fascia-dark: #94a3b8;
+
+  /* SVG interne kleurwaarden */
+  --svg-cavernosum-bg-light: #fce7f3;
+  --svg-cavernosum-bg-dark: #3b1228;
+  --svg-cavernosum-stroke-light: #be185d;
+  --svg-cavernosum-stroke-dark: #f472b6;
+
+  --svg-spongiosum-bg-light: #ffedd5;
+  --svg-spongiosum-bg-dark: #3a1f14;
+  --svg-spongiosum-stroke-light: #c2410c;
+  --svg-spongiosum-stroke-dark: #fb923c;
+
+  --svg-glans-fill-light: #fbcfe8;
+  --svg-glans-fill-dark: #4d1935;
+
+  --svg-skin-fill-light: #fdf2f8;
+  --svg-skin-fill-dark: #182338;
+  --svg-skin-stroke-light: #64748b;
+  --svg-skin-stroke-dark: #94a3b8;
+
+  --svg-subcutis-fill-light: #f8fafc;
+  --svg-subcutis-fill-dark: #142033;
+
+  --svg-buck-fill-light: #f1f5f9;
+  --svg-buck-fill-dark: #1a2942;
+
+  --svg-tunica-fill-light: #e2e8f0;
+  --svg-tunica-fill-dark: #253652;
+  --svg-tunica-stroke-light: #475569;
+  --svg-tunica-stroke-dark: #cbd5e1;
+
+  --svg-preputium-fill-light: #fce7f3;
+  --svg-preputium-fill-dark: #2e1d36;
+
+  --svg-ligament-fill-light: #cbd5e1;
+  --svg-ligament-fill-dark: #334155;
+
+  --svg-bone-bg-light: #e2e8f0;
+  --svg-bone-bg-dark: #1e293b;
+  --svg-bone-stroke-light: #64748b;
+  --svg-bone-stroke-dark: #64748b;
+
+  --svg-urethra-wall-light: #ea580c;
+  --svg-urethra-wall-dark: #fb923c;
+  --svg-urethra-lumen-light: #fff7ed;
+  --svg-urethra-lumen-dark: #1c1917;
+
+  --svg-sinusoid-fill-light: #fecdd3;
+  --svg-sinusoid-fill-dark: #7f1d1d;
+
+  --svg-context-soft-light: #e2e8f0;
+  --svg-context-soft-dark: #162235;
+
+  --urgent-bg-light: #fef2f2;
+  --urgent-bg-dark: #351116;
+  --urgent-border-light: #ef4444;
+  --urgent-border-dark: #f87171;
+
+  --success-light: #15803d;
+  --success-dark: #4ade80;
+
+  --scrollbar-track-light: #e6edf5;
+  --scrollbar-track-dark: #121c2f;
+  --scrollbar-thumb-light: #64748b;
+  --scrollbar-thumb-dark: #64748b;
+
+  --backdrop-light: rgba(15, 23, 42, 0.52);
+  --backdrop-dark: rgba(2, 6, 23, 0.76);
+
+  /* Semantische defaults (Light mode + fallback voor oudere browsers zonder light-dark) */
+  --bg: var(--bg-light);
+  --surface-card: var(--surface-card-light);
+  --surface-inset: var(--surface-inset-light);
+  --surface-elevated: var(--surface-elevated-light);
+  --text: var(--text-light);
+  --text-muted: var(--text-muted-light);
+  --border-subtle: var(--border-subtle-light);
+  --border-strong: var(--border-strong-light);
+  --accent-color: var(--accent-light);
+  --accent-text: var(--accent-text-light);
+
+  --cat-erectile: var(--cat-erectile-light);
+  --cat-vascular: var(--cat-vascular-light);
+  --cat-venous: var(--cat-venous-light);
+  --cat-neural: var(--cat-neural-light);
+  --cat-fascia: var(--cat-fascia-light);
+
+  --svg-cavernosum-bg: var(--svg-cavernosum-bg-light);
+  --svg-cavernosum-stroke: var(--svg-cavernosum-stroke-light);
+  --svg-spongiosum-bg: var(--svg-spongiosum-bg-light);
+  --svg-spongiosum-stroke: var(--svg-spongiosum-stroke-light);
+  --svg-glans-fill: var(--svg-glans-fill-light);
+  --svg-skin-fill: var(--svg-skin-fill-light);
+  --svg-skin-stroke: var(--svg-skin-stroke-light);
+  --svg-subcutis-fill: var(--svg-subcutis-fill-light);
+  --svg-buck-fill: var(--svg-buck-fill-light);
+  --svg-tunica-fill: var(--svg-tunica-fill-light);
+  --svg-tunica-stroke: var(--svg-tunica-stroke-light);
+  --svg-preputium-fill: var(--svg-preputium-fill-light);
+  --svg-ligament-fill: var(--svg-ligament-fill-light);
+  --svg-bone-bg: var(--svg-bone-bg-light);
+  --svg-bone-stroke: var(--svg-bone-stroke-light);
+  --svg-urethra-wall: var(--svg-urethra-wall-light);
+  --svg-urethra-lumen: var(--svg-urethra-lumen-light);
+  --svg-sinusoid-fill: var(--svg-sinusoid-fill-light);
+  --svg-context-soft: var(--svg-context-soft-light);
+
+  --urgent-bg: var(--urgent-bg-light);
+  --urgent-border: var(--urgent-border-light);
+  --success: var(--success-light);
+  --scrollbar-track: var(--scrollbar-track-light);
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --backdrop: var(--backdrop-light);
+
+  /* MANDATORY: dark-mode viewport support */
+  color-scheme: light dark;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Fallback voor browsers zonder light-dark() */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--bg-dark);
+    --surface-card: var(--surface-card-dark);
+    --surface-inset: var(--surface-inset-dark);
+    --surface-elevated: var(--surface-elevated-dark);
+    --text: var(--text-dark);
+    --text-muted: var(--text-muted-dark);
+    --border-subtle: var(--border-subtle-dark);
+    --border-strong: var(--border-strong-dark);
+    --accent-color: var(--accent-dark);
+    --accent-text: var(--accent-text-dark);
+
+    --cat-erectile: var(--cat-erectile-dark);
+    --cat-vascular: var(--cat-vascular-dark);
+    --cat-venous: var(--cat-venous-dark);
+    --cat-neural: var(--cat-neural-dark);
+    --cat-fascia: var(--cat-fascia-dark);
+
+    --svg-cavernosum-bg: var(--svg-cavernosum-bg-dark);
+    --svg-cavernosum-stroke: var(--svg-cavernosum-stroke-dark);
+    --svg-spongiosum-bg: var(--svg-spongiosum-bg-dark);
+    --svg-spongiosum-stroke: var(--svg-spongiosum-stroke-dark);
+    --svg-glans-fill: var(--svg-glans-fill-dark);
+    --svg-skin-fill: var(--svg-skin-fill-dark);
+    --svg-skin-stroke: var(--svg-skin-stroke-dark);
+    --svg-subcutis-fill: var(--svg-subcutis-fill-dark);
+    --svg-buck-fill: var(--svg-buck-fill-dark);
+    --svg-tunica-fill: var(--svg-tunica-fill-dark);
+    --svg-tunica-stroke: var(--svg-tunica-stroke-dark);
+    --svg-preputium-fill: var(--svg-preputium-fill-dark);
+    --svg-ligament-fill: var(--svg-ligament-fill-dark);
+    --svg-bone-bg: var(--svg-bone-bg-dark);
+    --svg-bone-stroke: var(--svg-bone-stroke-dark);
+    --svg-urethra-wall: var(--svg-urethra-wall-dark);
+    --svg-urethra-lumen: var(--svg-urethra-lumen-dark);
+    --svg-sinusoid-fill: var(--svg-sinusoid-fill-dark);
+    --svg-context-soft: var(--svg-context-soft-dark);
+
+    --urgent-bg: var(--urgent-bg-dark);
+    --urgent-border: var(--urgent-border-dark);
+    --success: var(--success-dark);
+    --scrollbar-track: var(--scrollbar-track-dark);
+    --scrollbar-thumb: var(--scrollbar-thumb-dark);
+    --backdrop: var(--backdrop-dark);
+  }
+}
+
+/* Moderne light-dark() functie */
+@supports (color: light-dark(white, black)) {
+  :root {
+    --bg: light-dark(var(--bg-light), var(--bg-dark));
+    --surface-card: light-dark(var(--surface-card-light), var(--surface-card-dark));
+    --surface-inset: light-dark(var(--surface-inset-light), var(--surface-inset-dark));
+    --surface-elevated: light-dark(var(--surface-elevated-light), var(--surface-elevated-dark));
+    --text: light-dark(var(--text-light), var(--text-dark));
+    --text-muted: light-dark(var(--text-muted-light), var(--text-muted-dark));
+    --border-subtle: light-dark(var(--border-subtle-light), var(--border-subtle-dark));
+    --border-strong: light-dark(var(--border-strong-light), var(--border-strong-dark));
+    --accent-color: light-dark(var(--accent-light), var(--accent-dark));
+    --accent-text: light-dark(var(--accent-text-light), var(--accent-text-dark));
+
+    --cat-erectile: light-dark(var(--cat-erectile-light), var(--cat-erectile-dark));
+    --cat-vascular: light-dark(var(--cat-vascular-light), var(--cat-vascular-dark));
+    --cat-venous: light-dark(var(--cat-venous-light), var(--cat-venous-dark));
+    --cat-neural: light-dark(var(--cat-neural-light), var(--cat-neural-dark));
+    --cat-fascia: light-dark(var(--cat-fascia-light), var(--cat-fascia-dark));
+
+    --svg-cavernosum-bg: light-dark(var(--svg-cavernosum-bg-light), var(--svg-cavernosum-bg-dark));
+    --svg-cavernosum-stroke: light-dark(var(--svg-cavernosum-stroke-light), var(--svg-cavernosum-stroke-dark));
+    --svg-spongiosum-bg: light-dark(var(--svg-spongiosum-bg-light), var(--svg-spongiosum-bg-dark));
+    --svg-spongiosum-stroke: light-dark(var(--svg-spongiosum-stroke-light), var(--svg-spongiosum-stroke-dark));
+    --svg-glans-fill: light-dark(var(--svg-glans-fill-light), var(--svg-glans-fill-dark));
+    --svg-skin-fill: light-dark(var(--svg-skin-fill-light), var(--svg-skin-fill-dark));
+    --svg-skin-stroke: light-dark(var(--svg-skin-stroke-light), var(--svg-skin-stroke-dark));
+    --svg-subcutis-fill: light-dark(var(--svg-subcutis-fill-light), var(--svg-subcutis-fill-dark));
+    --svg-buck-fill: light-dark(var(--svg-buck-fill-light), var(--svg-buck-fill-dark));
+    --svg-tunica-fill: light-dark(var(--svg-tunica-fill-light), var(--svg-tunica-fill-dark));
+    --svg-tunica-stroke: light-dark(var(--svg-tunica-stroke-light), var(--svg-tunica-stroke-dark));
+    --svg-preputium-fill: light-dark(var(--svg-preputium-fill-light), var(--svg-preputium-fill-dark));
+    --svg-ligament-fill: light-dark(var(--svg-ligament-fill-light), var(--svg-ligament-fill-dark));
+    --svg-bone-bg: light-dark(var(--svg-bone-bg-light), var(--svg-bone-bg-dark));
+    --svg-bone-stroke: light-dark(var(--svg-bone-stroke-light), var(--svg-bone-stroke-dark));
+    --svg-urethra-wall: light-dark(var(--svg-urethra-wall-light), var(--svg-urethra-wall-dark));
+    --svg-urethra-lumen: light-dark(var(--svg-urethra-lumen-light), var(--svg-urethra-lumen-dark));
+    --svg-sinusoid-fill: light-dark(var(--svg-sinusoid-fill-light), var(--svg-sinusoid-fill-dark));
+    --svg-context-soft: light-dark(var(--svg-context-soft-light), var(--svg-context-soft-dark));
+
+    --urgent-bg: light-dark(var(--urgent-bg-light), var(--urgent-bg-dark));
+    --urgent-border: light-dark(var(--urgent-border-light), var(--urgent-border-dark));
+    --success: light-dark(var(--success-light), var(--success-dark));
+    --scrollbar-track: light-dark(var(--scrollbar-track-light), var(--scrollbar-track-dark));
+    --scrollbar-thumb: light-dark(var(--scrollbar-thumb-light), var(--scrollbar-thumb-dark));
+    --backdrop: light-dark(var(--backdrop-light), var(--backdrop-dark));
+  }
+}
+
+/* Scrollbar fallback voor browsers zonder scrollbar-color */
+@supports not (scrollbar-color: auto) {
+  :root,
+  .scroller,
+  .svg-viewport {
+    scrollbar-width: auto;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 999px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  accent-color: var(--accent-color);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+body {
+  margin: 0;
+  accent-color: var(--accent-color);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--accent-color);
+  color: var(--accent-text);
+  padding: 0.65rem 1rem;
+  z-index: 1000;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* ==========================================================================
+   Header & Navigatie Tabs
+   ========================================================================== */
+
+.app-header {
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.brand-mark {
+  color: var(--accent-color);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.subtitle-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+.header-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.medical-notice {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--accent-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.medical-notice strong {
+  color: var(--text);
+}
+
+.medical-notice span {
+  color: var(--text-muted);
+}
+
+.nav-bar {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Tablist volgens tabs guide: single row, scroll + scroll-fade mask */
+.tablist.scroller {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: inline proximity;
+  --fade-size: 2.5rem;
+  --fade-dir: right;
+  --fade-start-pos: 0;
+  --fade-end-pos: 100%;
+  scroll-padding-inline: var(--fade-size);
+  mask:
+    linear-gradient(black, black) no-clip subtract,
+    linear-gradient(to var(--fade-dir), black, transparent) var(--fade-start-pos) 0 / var(--fade-start) 100% no-repeat no-clip,
+    linear-gradient(to var(--fade-dir), transparent, black) var(--fade-end-pos) 0 / var(--fade-end) 100% no-repeat no-clip;
+  animation: reveal-fade-start linear both, hide-fade-end linear both;
+  animation-timeline: scroll(self inline);
+  animation-range: 0 var(--fade-size), calc(100% - var(--fade-size)) 100%;
+}
+
+.tablist.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes reveal-fade-start {
+  to {
+    --fade-start: var(--fade-size);
+  }
+}
+
+@keyframes hide-fade-end {
+  from {
+    --fade-end: var(--fade-size);
+  }
+}
+
+/* IntersectionObserver fallback voor scroll fades */
+.scroller.more-start {
+  --fade-start: var(--fade-size);
+}
+.scroller.more-end {
+  --fade-end: var(--fade-size);
+}
+@supports not (animation-timeline: scroll()) {
+  .scroller {
+    transition: --fade-start 0.2s, --fade-end 0.2s;
+  }
+}
+
+/* Tabs: GEEN dimensie-veranderingen bij selectie; 3px underline via border-block-end op ::after */
+.tablist button {
+  position: relative;
+  flex: none;
+  scroll-snap-align: start;
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.78rem 1.05rem;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 6px 6px 0 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.tablist button:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent-color) 7%, transparent);
+}
+
+.tablist button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -3px;
+}
+
+.tablist button[aria-selected="true"] {
+  color: var(--accent-color);
+}
+
+.tablist button[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  border-block-end: 3px solid var(--accent-color);
+}
+
+/* ==========================================================================
+   Tabpanels Grid (geen padding/border/margin op [role="tabpanel"] zelf!)
+   ========================================================================== */
+
+.tabpanels-grid {
+  display: grid;
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.tabpanels-grid > [role="tabpanel"] {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.tabpanel-content {
+  padding: 1.5rem;
+}
+
+.panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.panel-header h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.35rem;
+}
+
+.panel-header p {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 72ch;
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Buttons & Switches
+   ========================================================================== */
+
+.view-switcher,
+.filter-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  background: var(--surface-inset);
+  padding: 0.3rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+}
+
+.view-btn,
+.filter-btn,
+.preset-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.view-btn.is-active,
+.filter-btn.is-active,
+.preset-btn.is-active {
+  background: var(--surface-card);
+  color: var(--accent-color);
+  border-color: var(--border-subtle);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.05rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  background: var(--surface-inset);
+  color: var(--text);
+  border: 1px solid var(--border-subtle);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent-color);
+}
+
+/* ==========================================================================
+   Tab 1: Anatomie Atlas
+   ========================================================================== */
+
+.atlas-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.atlas-stage-card,
+.inspector-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.stage-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0.85rem;
+}
+
+.layer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.layer-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.layer-toggle span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.swatch-erectile { background: var(--cat-erectile); }
+.swatch-vascular { background: var(--cat-vascular); }
+.swatch-neural { background: var(--cat-neural); }
+.swatch-fascia { background: var(--cat-fascia); }
+
+.zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.zoom-readout {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.84rem;
+  min-width: 3.1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.svg-viewport {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: auto;
+  max-height: 540px;
+  display: grid;
+  place-items: center;
+  padding: 0.5rem;
+}
+
+.svg-zoom-frame {
+  width: 100%;
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+}
+
+.anatomy-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.svg-layer.is-hidden {
+  display: none;
+}
+
+.orient-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  fill: var(--text-muted);
+}
+
+.orient-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: var(--accent-color);
+}
+
+.svg-subtle-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-muted);
+}
+
+.anat-part {
+  cursor: pointer;
+  transition: opacity 0.15s ease, filter 0.15s ease, stroke-width 0.15s ease;
+}
+
+.anat-part:hover,
+.anat-part:focus-visible {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-color) 70%, transparent));
+  outline: none;
+}
+
+.anat-part.is-selected {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent-color) 90%, transparent));
+  stroke-width: 4.5px;
+}
+
+.svg-labels line {
+  stroke: var(--text-muted);
+  stroke-width: 1.25;
+  stroke-dasharray: 2 2;
+}
+
+.svg-labels circle {
+  fill: var(--accent-color);
+}
+
+.svg-labels text {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--text);
+  cursor: pointer;
+}
+
+.label-callout.is-selected text {
+  fill: var(--accent-color);
+  font-weight: 700;
+}
+
+.label-callout.is-selected line {
+  stroke: var(--accent-color);
+  stroke-width: 1.8;
+  stroke-dasharray: none;
+}
+
+.structure-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+.struct-chip {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.struct-chip:hover {
+  border-color: var(--accent-color);
+}
+
+.struct-chip.is-active {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  border-color: var(--accent-color);
+}
+
+.inspector-card {
+  position: sticky;
+  top: 7.5rem;
+}
+
+.inspector-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.cat-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  color: var(--accent-color);
+}
+
+.latin-term {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.inspector-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.insp-summary {
+  margin: 0 0 1rem;
+  font-size: 0.94rem;
+  color: var(--text);
+}
+
+.insp-details {
+  margin: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.insp-details > div {
+  background: var(--surface-inset);
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+}
+
+.insp-details dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-color);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.insp-details dd {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.inspector-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Tab 2: Hemodynamica & Fysiologie Simulator
+   ========================================================================== */
+
+.hemo-controls-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.phase-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  color: var(--accent-color);
+}
+
+#arousal-slider {
+  width: 100%;
+  cursor: pointer;
+  margin: 0.4rem 0 0.75rem;
+}
+
+.phase-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.scenario-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.scenario-block select,
+#pathology-search {
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+.scenario-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.hemo-visual-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.hemo-svg-card,
+.telemetry-panel {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+#svg-hemodynamics {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hemo-panel-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  fill: var(--text);
+}
+
+.hemo-diagram-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  fill: var(--text);
+}
+
+.hemo-small-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-muted);
+}
+
+.hemo-sinusoid-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  fill: var(--text);
+}
+
+.hemo-icp-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  fill: var(--cat-vascular);
+}
+
+.cascade-node rect {
+  fill: var(--surface-card);
+  stroke: var(--border-strong);
+  stroke-width: 1.6;
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.cascade-node text {
+  font-size: 11.5px;
+  font-weight: 600;
+  fill: var(--text);
+}
+
+.cascade-node .node-sub {
+  font-size: 10px;
+  fill: var(--text-muted);
+}
+
+.cascade-node.is-active rect {
+  fill: color-mix(in srgb, var(--accent-color) 16%, var(--surface-card));
+  stroke: var(--accent-color);
+  stroke-width: 2.2;
+}
+
+.cascade-node.is-blocked rect {
+  fill: var(--urgent-bg);
+  stroke: var(--urgent-border);
+  stroke-width: 2.2;
+}
+
+#hemo-arterial-flow {
+  animation: flow-dash 1.2s linear infinite;
+}
+
+#hemo-venous-flow {
+  animation: flow-dash 1.4s linear infinite;
+}
+
+@keyframes flow-dash {
+  from {
+    stroke-dashoffset: 36;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.telemetry-panel h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.phase-title-readout {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.phase-mechanism {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.metrics-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.metric-item progress {
+  width: 100%;
+  height: 10px;
+  margin-top: 0.3rem;
+}
+
+.metric-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.86rem;
+}
+
+.metric-label strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.muscle-status-box {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-size: 0.86rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+/* ==========================================================================
+   Tab 3: Pathologie & Varianten
+   ========================================================================== */
+
+.pathology-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.pathology-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1rem;
+}
+
+.pathology-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.pathology-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.pathology-card.is-urgent {
+  border-left: 4px solid var(--urgent-border);
+}
+
+.path-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.path-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  color: var(--accent-color);
+}
+
+.pathology-card.is-urgent .path-badge {
+  background: var(--urgent-bg);
+  color: var(--urgent-border);
+}
+
+.pathology-card.is-variant .path-badge {
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+}
+
+.path-thumb {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.pathology-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.pathology-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+/* ==========================================================================
+   Tab 4: Zelfonderzoek & Kennistest
+   ========================================================================== */
+
+.exam-quiz-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.self-exam-col,
+.quiz-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.2rem;
+}
+
+.exam-steps {
+  margin: 0.75rem 0 1.25rem;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.exam-steps li {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+}
+
+.exam-steps strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--text);
+}
+
+.exam-steps span {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.compare-card {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.compare-card h5 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--accent-color);
+}
+
+.compare-card p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.red-flags-banner {
+  background: var(--urgent-bg);
+  border: 1px solid var(--urgent-border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+}
+
+.red-flags-banner h4 {
+  margin: 0 0 0.45rem;
+  color: var(--urgent-border);
+}
+
+.red-flags-banner ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.87rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-header h3 {
+  margin: 0;
+}
+
+#quiz-progress {
+  width: 100%;
+  height: 10px;
+  margin-bottom: 1rem;
+}
+
+.quiz-question {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 0.85rem;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.quiz-option-btn {
+  text-align: left;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 9px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-inset);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+  border-color: var(--accent-color);
+}
+
+.quiz-option-btn.is-correct {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 15%, var(--surface-inset));
+}
+
+.quiz-option-btn.is-wrong {
+  border-color: var(--urgent-border);
+  background: var(--urgent-bg);
+}
+
+.quiz-feedback {
+  margin-top: 0.9rem;
+  padding: 0.8rem;
+  border-radius: 9px;
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.88rem;
+}
+
+.quiz-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Native Modal Dialog (dialog & light-dismiss-a-dialog)
+   ========================================================================== */
+
+dialog {
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 0;
+  background: var(--surface-card);
+  color: var(--text);
+  width: min(740px, 92vw);
+  max-height: 88dvh;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Alleen display aanpassen op dialog[open] zodat gesloten dialog verborgen blijft */
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* MANDATORY: voorkom dat pagina achter modal scrolt */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: var(--backdrop);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dialog-header h2 {
+  margin: 0.35rem 0 0;
+  font-size: 1.25rem;
+}
+
+.dialog-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  color: var(--accent-color);
+}
+
+.dialog-close-btn {
+  background: var(--surface-inset);
+  color: var(--text);
+  border: 1px solid var(--border-subtle);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: grid;
+  place-items: center;
+}
+
+.dialog-body {
+  padding: 1.25rem 1.35rem;
+  overflow-y: auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.dialog-visual {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: grid;
+  place-items: center;
+}
+
+.dialog-lead {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.dialog-section h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.96rem;
+  color: var(--accent-color);
+}
+
+.dialog-section p,
+.dialog-section ul {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.dialog-section ul {
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.dialog-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.dialog-alert {
+  background: var(--urgent-bg);
+  border: 1px solid var(--urgent-border);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  font-size: 0.88rem;
+}
+
+.dialog-alert strong {
+  color: var(--urgent-border);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.dialog-alert p {
+  margin: 0;
+}
+
+.dialog-footer {
+  padding: 0.9rem 1.35rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.app-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--surface-card);
+  padding: 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Fallback voor oudere browsers zonder accent-color (brand-consistent-forms)
+   ========================================================================== */
+
+@supports not (accent-color: #000) {
+  .layer-toggle input[type="checkbox"].visually-hidden {
+    position: absolute !important;
+    clip-path: inset(50%) !important;
+    overflow: hidden !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .layer-toggle {
+    position: relative;
+    padding-left: 1.65rem;
+  }
+
+  .layer-toggle input[type="checkbox"] + span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 2px solid var(--border-strong);
+    background: var(--surface-card);
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+  }
+
+  .layer-toggle input[type="checkbox"]:focus-visible + span::before {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .layer-toggle input[type="checkbox"]:checked + span::before {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+
+  .layer-toggle input[type="checkbox"]:checked + span::after {
+    content: "✓";
+    position: absolute;
+    left: 0.18rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-text);
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, var(--accent-color) var(--progress, 0%), var(--border-subtle) var(--progress, 0%));
+    border-radius: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    margin-top: -5px;
+  }
+
+  input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: var(--border-subtle);
+    border-radius: 4px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-progress {
+    background-color: var(--accent-color);
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  progress {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background: var(--border-subtle);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  progress::-webkit-progress-bar {
+    background-color: var(--border-subtle);
+    border-radius: 999px;
+  }
+
+  progress::-webkit-progress-value {
+    background-color: var(--accent-color);
+    border-radius: 999px;
+  }
+
+  progress::-moz-progress-bar {
+    background-color: var(--accent-color);
+    border-radius: 999px;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion & Responsive
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  #hemo-arterial-flow,
+  #hemo-venous-flow {
+    animation: none;
+  }
+  .svg-zoom-frame,
+  .pathology-card {
+    transition: none;
+  }
+}
+
+@media (max-width: 1040px) {
+  .atlas-layout,
+  .hemo-visual-grid,
+  .hemo-controls-card,
+  .exam-quiz-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .inspector-card {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-inner,
+  .nav-bar,
+  .tabpanel-content {
+    padding-inline: 1rem;
+  }
+}
