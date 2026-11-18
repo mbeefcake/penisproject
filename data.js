@@ -19,7 +19,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Tijdens seksuele stimulatie ontspannen de gladde spiercellen in de trabekels onder invloed van stikstofmonoxide (NO/cGMP). De sinusoïden vullen zich met arterieel bloed onder hoge druk, waardoor expansie en stijfheid optreden.',
     neurovascular: 'Arterieel: a. profunda penis (cavernosa) en aa. helicinae. Veneus: subtunicale venulen en vv. emissariae. Innervatie: nn. cavernosi (autonoom).',
     clinical: 'Plaats van priapisme (low-flow ischemie), fibrose bij de ziekte van Peyronie en injectietherapie (alprostadil) bij erectiele disfunctie.',
-    relatedPathologyId: 'erectiele-disfunctie'
+    relatedPathologyId: 'erectiele-disfunctie',
+    hemoFocusId: 'hemo-sinusoid'
   },
   {
     id: 'corpus-spongiosum',
@@ -31,8 +32,9 @@ export const ANATOMY_STRUCTURES = [
     histology: 'Bevat fijnere trabekels met een hoger aandeel elastische vezels en een veel dunnere tunica albuginea dan de corpora cavernosa.',
     physiology: 'Vult zich wel met bloed tijdens erectie maar behoudt een lagere intracorporale druk. Dit voorkomt dat de urethra wordt dichtgedrukt tijdens zaadlozing (ejaculatie).',
     neurovascular: 'Arterieel: a. bulbourethralis en takken van de a. pudenda interna. Veneus: drainage via vv. circumflexae en v. dorsalis profunda.',
-    clinical: 'Beschermt de urethra tegen compressie. Trauma (bijvoorbeeld penisfactuur) kan gepaard gaan met urethraletsel (bloed uit de meatus).',
-    relatedPathologyId: 'hypospadie'
+    clinical: 'Beschermt de urethra tegen compressie. Trauma (bijvoorbeeld penisfractuur) kan gepaard gaan met urethraletsel (bloed uit de meatus).',
+    relatedPathologyId: 'hypospadie',
+    hemoFocusId: 'hemo-sinusoid'
   },
   {
     id: 'glans-penis',
@@ -45,7 +47,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Fungeert als schokdemper tijdens penetratie en als primair sensorisch orgaan voor tactiele en erogene prikkels die de ejaculatiereflex aansturen.',
     neurovascular: 'Arterieel: distale uitlopers van de aa. dorsales penis. Sensorische innervatie: eindtakken van de n. dorsalis penis.',
     clinical: 'Ontsteking van de eikel heet balanitis. De rand (corona glandis) vertoont bij 15–30% van de mannen goedaardige parelpapels (hirsuties papillaris).',
-    relatedPathologyId: 'balanitis'
+    relatedPathologyId: 'balanitis',
+    hemoFocusId: 'node-para'
   },
   {
     id: 'urethra',
@@ -61,6 +64,19 @@ export const ANATOMY_STRUCTURES = [
     relatedPathologyId: 'hypospadie'
   },
   {
+    id: 'fossa-navicularis-meatus',
+    name: 'Fossa navicularis & Meatus',
+    latin: 'Fossa navicularis urethrae et meatus urethrae externus',
+    category: 'erectile',
+    views: ['sagittal'],
+    summary: 'De scheepvormige verbreding van de plasbuis net achter de eikeltop en de spleetvormige buitenste urinebuisopening (meatus).',
+    histology: 'Bekleed met gelaagd plaveiselepitheel als overgang tussen het inwendige urethrale slijmvlies en de buitenzijde van de glans.',
+    physiology: 'Door de specifieke vorm van de fossa navicularis en de verticale spleet van de meatus ontstaat een wervelende, gebundelde laminaire urinestraal.',
+    neurovascular: 'Rijk gevasculariseerd en gevoelig via takjes van de n. dorsalis penis.',
+    clinical: 'Vernauwing (meatusstenose) of aangeboren lagere ligging (hypospadie) verstoort de urinestraal. Ook voorkeurslocatie voor urethritis-inspectie.',
+    relatedPathologyId: 'hypospadie'
+  },
+  {
     id: 'tunica-albuginea',
     name: 'Bindweefselkapsel (Tunica albuginea)',
     latin: 'Tunica albuginea corporum cavernosorum',
@@ -71,7 +87,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Begrenst de maximale expansie van de corpora cavernosa en comprimeert bij vulling de schuin doorborende veneuze afvoervaten (vv. emissariae), zodat het bloed gevangen blijft.',
     neurovascular: 'Relatief vaatarm; doorboord door emissaire venen en takken van de caverneuze zenuwen en vaten.',
     clinical: 'Littekenvorming/plaques in de tunica albuginea veroorzaken kromstand bij de ziekte van Peyronie. Plotselinge scheuring tijdens buigtrauma veroorzaakt een penisfractuur.',
-    relatedPathologyId: 'ziekte-van-peyronie'
+    relatedPathologyId: 'ziekte-van-peyronie',
+    hemoFocusId: 'hemo-tunica'
   },
   {
     id: 'septum-penis',
@@ -84,7 +101,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Zorgt dat beide corpora cavernosa functioneel als één drukkamer samenwerken: bloed en intracaverneuze druk verdelen zich symmetrisch tussen links en rechts.',
     neurovascular: 'Doorlaatbaar voor kleine anastomosen tussen de linker en rechter sinusoïden.',
     clinical: 'Dankzij deze fenestraties verspreidt een enkelzijdige intracaverneuze injectie zich naar beide zwellichamen en volstaat vaak één punctie bij ischemisch priapisme.',
-    relatedPathologyId: 'priapisme'
+    relatedPathologyId: 'priapisme',
+    hemoFocusId: 'hemo-sinusoid'
   },
   {
     id: 'fascia-buck',
@@ -98,6 +116,19 @@ export const ANATOMY_STRUCTURES = [
     neurovascular: 'Begrenst het compartiment van de v. dorsalis profunda, aa. dorsales en nn. dorsales.',
     clinical: 'Klinische barrière bij trauma: als de fascia van Buck intact blijft bij een penisfractuur, blijft het hematoom beperkt tot de schacht ("aubergine-teken"). Scheurt deze ook, dan verspreidt bloed/urine zich naar scrotum en buikwand.',
     relatedPathologyId: 'ziekte-van-peyronie'
+  },
+  {
+    id: 'cutis-dartos',
+    name: 'Penishuid & Tunica dartos',
+    latin: 'Cutis penis et tunica dartos',
+    category: 'fascia',
+    views: ['sagittal', 'transverse'],
+    summary: 'Dunne, extreem rekbare en vetvrije penishuid ondersteund door de oppervlakkige fascie (tunica dartos) met gladde spiervezels.',
+    histology: 'Gepigmenteerd meerlagig verhoornend plaveiselepitheel zonder onderhuids vetweefsel; de tunica dartos bevat losmazig bindweefsel, elastine en gladde spiercellen doorlopend in het scrotum.',
+    physiology: 'Glijdt soepel over de diepe fascia van Buck zodat de huid moeiteloos kan meebewegen bij lengte- en omtrektoename tijdens erectie. Dartos-contractie reguleert tevens temperatuur.',
+    neurovascular: 'Vascularisatie via aa. pudendae externae; drainage via de oppervlakkige dorsale vene; sensoriek via takken van n. ilioinguinalis en n. dorsalis penis.',
+    clinical: 'Plaats waar goedaardige Fordyce-plekjes (zichtbare talgklieren) zichtbaar zijn. Door het ontbreken van vetweefsel kunnen zwellingen en oedeem hier snel uitbreiden.',
+    relatedPathologyId: 'fordyce-plekjes'
   },
   {
     id: 'preputium-frenulum',
@@ -126,6 +157,33 @@ export const ANATOMY_STRUCTURES = [
     relatedPathologyId: 'ziekte-van-peyronie'
   },
   {
+    id: 'os-pubis',
+    name: 'Schaambeen & Symphysis pubica',
+    latin: 'Os pubis et symphysis pubica',
+    category: 'fascia',
+    views: ['sagittal'],
+    summary: 'Voorste benige deel van het bekken waaraan de schaambeenophangband (lig. suspensorium) en de wortels van de zwellichamen zijn verankerd.',
+    histology: 'Trabeculair en corticaal botweefsel verbonden in de middenlijn door een kraakbenige schijf (fibrocartilago interpubica).',
+    physiology: 'Vormt het stevige mechanische ankerpunt van waaruit de erectiehoek en stabiliteit van de penisschacht worden gedragen.',
+    neurovascular: 'De v. dorsalis profunda en takken van de a. pudenda interna passeren direct onder het boogje van de symfyse (arcus pubis).',
+    clinical: 'Bekkenfracturen met loslating rond het os pubis zijn een bekende oorzaak van urethra-ruptuur en neurovasculaire erectiele disfunctie.',
+    relatedPathologyId: 'erectiele-disfunctie'
+  },
+  {
+    id: 'bekkenbodem-spieren',
+    name: 'Bekkenbodemspieren & Bulbusbasis',
+    latin: 'Mm. ischiocavernosus et bulbospongiosus',
+    category: 'erectile',
+    views: ['sagittal'],
+    summary: 'Dwarsgestreepte bekkenbodemspieren die de wortels (crura en bulbus) van de zwellichamen omvatten en actief kunnen aanspannen.',
+    histology: 'Snel-contraherende dwarsgestreepte skeletspiervezels onder willekeurige en reflexmatige controle vanuit de nervus pudendus.',
+    physiology: 'Aanspanning van de m. ischiocavernosus pompt bloed uit de wortel naar de schacht en tilt de intracaverneuze druk kortstondig tot boven de systolische bloeddruk (suprasystolische rigiditeit). De m. bulbospongiosus drijft sperma en laatste urinedruppels krachtig uit.',
+    neurovascular: 'Motorisch geïnnerveerd door perineale takken van de n. pudendus (S2–S4).',
+    clinical: 'Bekkenfysiotherapie (Kegel-oefeningen) versterkt deze spieren bij lichte erectiele disfunctie, nadruppelen en ter verbetering van ejaculatiecontrole.',
+    relatedPathologyId: 'erectiele-disfunctie',
+    hemoFocusId: 'metric-icp'
+  },
+  {
     id: 'arteria-profunda',
     name: 'Diepe zwellichaamslagader (A. cavernosa)',
     latin: 'Arteria profunda penis',
@@ -136,7 +194,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Geeft kurkentrekkervormige zijtakjes af (arteriae helicinae) die direct uitmonden in de sinusoïden. Bij relaxatie stijgt de bloedstroom met een factor 10–20.',
     neurovascular: 'Eindtak van de arteria penis (uit de a. pudenda interna). Sympathisch in rust gecontraheerd; parasympathisch verwijd via NO/cGMP.',
     clinical: 'Atherosclerose of microvasculaire schade (diabetes, roken, hypertensie) in deze kleine arterie (diameter ~0,5–1 mm) is de meest voorkomende oorzaak van vasculogene erectiele disfunctie — vaak jaren vóór coronaire hartziekte.',
-    relatedPathologyId: 'erectiele-disfunctie'
+    relatedPathologyId: 'erectiele-disfunctie',
+    hemoFocusId: 'hemo-artery'
   },
   {
     id: 'arteria-dorsalis',
@@ -149,7 +208,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Voorziet met name de glans penis, de huid, het voorhuidweefsel en via circumflexe takken het corpus spongiosum van zuurstofrijk bloed.',
     neurovascular: 'Tak van de arteria pudenda interna; loopt parallel met de n. dorsalis penis.',
     clinical: 'Belangrijk herkenningspunt bij peniele reconstructieve chirurgie en microchirurgische revascularisatie na bekkentrauma.',
-    relatedPathologyId: 'priapisme'
+    relatedPathologyId: 'priapisme',
+    hemoFocusId: 'hemo-artery'
   },
   {
     id: 'vena-dorsalis-profunda',
@@ -161,8 +221,36 @@ export const ANATOMY_STRUCTURES = [
     histology: 'Dunwandige vene met kleppen die retrogradestroom voorkomen, gelegen in de groeve tussen beide corpora cavernosa.',
     physiology: 'Draineert het grootste deel van het caverneuze bloed naar de plexus venosus prostaticus (plexus van Santorini).',
     neurovascular: 'Ontvangt bloed van de vv. emissariae (via vv. circumflexae). Wordt indirect ontlast tijdens veno-occlusie wanneer de emissaire venen dichtgedrukt worden.',
-    clinical: 'Trombose of flebitis van de oppervlakkige vene heet ziekte van Mondor (een onschuldige maar pijnlijke streng). Schade aan het veno-occlusieve systeem leidt tot veneuze lekkage.',
-    relatedPathologyId: 'erectiele-disfunctie'
+    clinical: 'Schade aan het veno-occlusieve systeem leidt tot veneuze lekkage. Bij penisfractuur of diepe shunting bij priapisme is dit vat chirurgisch relevant.',
+    relatedPathologyId: 'erectiele-disfunctie',
+    hemoFocusId: 'hemo-venule'
+  },
+  {
+    id: 'vena-dorsalis-superficialis',
+    name: 'Oppervlakkige dorsale penisvene',
+    latin: 'Vena dorsalis penis superficialis',
+    category: 'vascular',
+    views: ['sagittal', 'transverse'],
+    summary: 'Oppervlakkig gelegen ader in de tunica dartos (buiten de fascia van Buck) die het bloed van de penishuid en voorhuid afvoert.',
+    histology: 'Subcutane vene met dunne wand, goed zichtbaar onder de dunne schachthuid bij verhoogde doorbloeding.',
+    physiology: 'Draineert via de vv. pudendae externae naar de vena saphena magna (lies) en staat los van het diepe intracaverneuze veno-occlusieve systeem.',
+    neurovascular: 'Ligt in de oppervlakkige fascieruimte dorsaal in de middenlijn.',
+    clinical: 'Tromboflebitis van deze ader staat bekend als de ziekte van Mondor van de penis: een plotselinge, harde maar onschuldige onderhuidse streng die spontaan herstelt.',
+    relatedPathologyId: 'balanitis'
+  },
+  {
+    id: 'venae-emissariae',
+    name: 'Emissaire & Circumflexe venen',
+    latin: 'Venae emissariae et circumflexae penis',
+    category: 'vascular',
+    views: ['sagittal', 'transverse'],
+    summary: 'Kleine afvoeraders die schuin door de dikke tunica albuginea heen boren en het caverneuze bloed afvoeren richting de diepe dorsale vene.',
+    histology: 'Dunwandige veneuze takjes zonder eigen stevige spierlaag, schuin ingebed tussen de bindweefsellagen van de tunica albuginea.',
+    physiology: 'Kern van het veno-occlusieve mechanisme: zodra de caverneuze sinusoïden opzwellen, worden deze schuin lopende venen dichtgeknepen tegen de stugge tunica albuginea.',
+    neurovascular: 'Verbinden het subtunicale veneuze netwerk binnen de corpora cavernosa met de vv. circumflexae en v. dorsalis profunda.',
+    clinical: 'Als verouderd of fibrotisch weefsel deze venen niet goed afsluit, ontstaat veneuze lekkage waarbij een erectie snel wegzakt.',
+    relatedPathologyId: 'erectiele-disfunctie',
+    hemoFocusId: 'hemo-venule'
   },
   {
     id: 'nervus-dorsalis',
@@ -175,7 +263,8 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Geleidt tast-, druk-, temperatuur- en pijnprikkels vanuit de schachthuid, voorhuid en vooral de glans naar het sacrale ruggenmerg (S2–S4) en de hersenschors. Essentieel voor reflexogene erectie en het orgasme.',
     neurovascular: 'Loopt meest lateraal naast de aa. dorsales penis onder de fascia van Buck (op de "10- en 2-uur posities").',
     clinical: 'Moet strikt gespaard worden bij chirurgische correcties van de ziekte van Peyronie (mobilisatie neurovasculaire bundel) om gevoelsverlies in de eikel te voorkomen.',
-    relatedPathologyId: 'ziekte-van-peyronie'
+    relatedPathologyId: 'ziekte-van-peyronie',
+    hemoFocusId: 'node-para'
   },
   {
     id: 'nervi-cavernosi',
@@ -188,9 +277,53 @@ export const ANATOMY_STRUCTURES = [
     physiology: 'Parasympathische vezels geven NO en acetylcholine vrij voor erectie; sympathische vezels geven noradrenaline vrij voor gladde-spiercontractie (flaccide toestand en detumescentie na ejaculatie).',
     neurovascular: 'Lopen posterolateraal langs de prostaat en membraanurethra voordat ze het corpus cavernosum binnendringen nabij de hilus.',
     clinical: 'Kwetsbaar tijdens radicale prostatectomie of bekkenchirurgie; beschadiging veroorzaakt neurogene erectiele disfunctie ondanks intacte bloedvaten.',
-    relatedPathologyId: 'erectiele-disfunctie'
+    relatedPathologyId: 'erectiele-disfunctie',
+    hemoFocusId: 'node-no'
   }
 ];
+
+export const ORIENTATION_TERMS = {
+  dorsaal: {
+    id: 'orient-dorsaal',
+    badge: 'Anatomische oriëntatie',
+    latin: 'Dorsum penis (12 uur)',
+    title: 'Dorsaal (Rugzijde / Bovenzijde)',
+    summary: 'In de anatomische standaardpositie (opgericht tegen de buikwand) is de rugzijde het oppervlak waar de twee grote corpora cavernosa en de diepe dorsale vaat-zenuwstreng lopen.',
+    details: 'Chirurgen en urologen gebruiken op de dwarsdoorsnede vaak de klokrichting: 12 uur is dorsaal (boven), waar de diepe dorsale vene centraal ligt en de zenuwen op 10 en 2 uur passeren.'
+  },
+  ventraal: {
+    id: 'orient-ventraal',
+    badge: 'Anatomische oriëntatie',
+    latin: 'Facies urethralis (6 uur)',
+    title: 'Ventraal (Onderzijde / Urethrazijde)',
+    summary: 'De onderzijde van de penis waar het ongepaarde corpus spongiosum, de plasbuis (urethra) en het voorhuidriempje (frenulum) zich bevinden.',
+    details: 'Afwijkingen aan deze zijde zijn bijvoorbeeld hypospadie (meatusopening aan de ventrale zijde) of een te kort frenulum breve.'
+  },
+  proximaal: {
+    id: 'orient-proximaal',
+    badge: 'Anatomische oriëntatie',
+    latin: 'Radix penis (Wortel)',
+    title: 'Proximaal (Richting bekken / aanhechting)',
+    summary: 'Het inwendige begin van de penis dat diep in het perineum verankerd zit met het schaambeen (os pubis), de bulbus penis en de twee crura.',
+    details: 'Ongeveer een derde tot de helft van de totale lengte van de zwellichamen bevindt zich inwendig proximaal in het bekken.'
+  },
+  distaal: {
+    id: 'orient-distaal',
+    badge: 'Anatomische oriëntatie',
+    latin: 'Pars libera (Eikelzijde)',
+    title: 'Distaal (Richting uiteinde / Glans)',
+    summary: 'Het vrij hangende uiteinde het verst verwijderd van het bekken, eindigend in de corona glandis, de glans penis en de meatus urethrae externus.',
+    details: 'Hier vormt het sponslichaam het kapje (glans) over de stompe toppen van de twee corpora cavernosa.'
+  },
+  lateraal: {
+    id: 'orient-lateraal',
+    badge: 'Anatomische oriëntatie',
+    latin: 'Latus (3 & 9 uur)',
+    title: 'Lateraal (Zijkanten)',
+    summary: 'De linker- en rechterflanken van de penisschacht.',
+    details: 'Bij chirurgische benaderingen voor peniele injecties of shunts kiest men vaak de dorsolaterale zijden (bijv. 2 of 10 uur buiten de zenuwbundel of 3/9 uur), om zowel de dorsale zenuwen (12 uur) als de ventrale urethra (6 uur) te vermijden.'
+  }
+};
 
 export const HEMODYNAMIC_PHASES = [
   {
@@ -323,6 +456,159 @@ export const SCENARIO_MODIFIERS = {
   }
 };
 
+export const HEMO_HOTSPOTS = {
+  'hemo-tunica': {
+    id: 'hemo-tunica',
+    title: 'Tunica albuginea (Drukbarrière)',
+    subtitle: 'Micro-vasculair CVOM',
+    detail: 'Deze taaie, nauwelijks rekbare tweelagige bindweefselkapsel vormt de tegendruk voor het veno-occlusieve mechanisme. Zonder deze stevige buitenwand zou het bloed niet onder druk blijven staan.',
+    clinicalTip: 'Kliniek: Littekenplaque in de tunica veroorzaakt kromstand (Ziekte van Peyronie); te veel elasticiteitsverlies veroorzaakt veneuze lekkage.',
+    actionLabel: 'Bekijk in Anatomie Atlas',
+    actionType: 'anatomy',
+    actionPayload: 'tunica-albuginea'
+  },
+  'hemo-venule': {
+    id: 'hemo-venule',
+    title: 'Subtunicale venulen & Vena emissaria',
+    subtitle: 'Veneuze afvoer & occlusie',
+    detail: 'In rusttoestand voeren deze venen bloed vrijuit af. Naarmate de caverneuze sinusoïde opzwelt, worden de venulen platgedrukt tegen de tunica albuginea en de schuin doorborende vena emissaria afgekneld.',
+    clinicalTip: 'Kliniek: Werkt de compressie onvoldoende, dan daalt de stijfheid ondanks normale slagaderlijke doorbloeding ("veneuze lekkage").',
+    actionLabel: 'Simuleer veneuze lekkage',
+    actionType: 'scenario',
+    actionPayload: 'venousLeak'
+  },
+  'hemo-trabecula': {
+    id: 'hemo-trabecula',
+    title: 'Trabekulair glad spierweefsel',
+    subtitle: 'Mechanische schakelaar van de erectie',
+    detail: 'In rust zorgen noradrenaline en hoge intracellulaire Ca²⁺-spiegels voor samentrekking van deze spierbundels. Ontspanning onder invloed van cGMP opent de sponsachtige bloedkamers.',
+    clinicalTip: 'Kliniek: Stress en koude geven sympathische adrenaline-afgifte, waardoor deze spiertjes direct samentrekken en een erectie afneemt.',
+    actionLabel: 'Simuleer sympathische stress-puls',
+    actionType: 'stress',
+    actionPayload: null
+  },
+  'hemo-sinusoid': {
+    id: 'hemo-sinusoid',
+    title: 'Caverneuze sinusoïde (Lacuna)',
+    subtitle: 'Endotheelbeklede bloedkamer',
+    detail: 'Duizenden van deze met elkaar verbonden holten vullen zich met arterieel bloed zodra de gladde spieren ontspannen. De oplopende vulling drukt het weefsel naar buiten tegen de tunica.',
+    clinicalTip: 'Kliniek: Bij ischemisch priapisme stagneert zuurstofarm bloed langer dan 4 uur in deze sinusoïden, wat leidt tot weefselschade.',
+    actionLabel: 'Bekijk Corpus cavernosum in Atlas',
+    actionType: 'anatomy',
+    actionPayload: 'corpus-cavernosum'
+  },
+  'hemo-artery': {
+    id: 'hemo-artery',
+    title: 'Arteria helicina (Krulslagader)',
+    subtitle: 'Arteriële aanvoer',
+    detail: 'In slappe toestand liggen deze zijtakken van de arteria profunda penis gekruld en vernauwd. NO/cGMP doet het vat strekken en verwijden, waardoor de arteriële flow met factor 10–20 kan toenemen.',
+    clinicalTip: 'Kliniek: Endotheelschade door roken, diabetes of hoge bloeddruk vernauwt deze haarvaten vaak jaren vóór coronaire hartklachten.',
+    actionLabel: 'Simuleer endotheeldisfunctie',
+    actionType: 'scenario',
+    actionPayload: 'endothelial'
+  },
+  'node-para': {
+    id: 'node-para',
+    title: '1. Parasympathicus (S2–S4) & Endotheel',
+    subtitle: 'Neurale & schuispannings-trigger',
+    detail: 'Zowel psychogene prikkels vanuit de hersenen als directe tastprikkels vanuit de glans (via n. dorsalis naar sacraal ruggenmerg S2–S4) activeren parasympathische caverneuze zenuwen (nNOS) en endotheelcellen (eNOS).',
+    clinicalTip: 'Kliniek: Schade aan bekkenzenuwen (bijv. na prostaatoperatie) verstoort deze allereerste schakel.',
+    actionLabel: 'Start volledige erectiecyclus',
+    actionType: 'cycle',
+    actionPayload: null
+  },
+  'node-no': {
+    id: 'node-no',
+    title: '2. Stikstofmonoxide (NO) → sGC',
+    subtitle: 'Gasvormige boodschapper',
+    detail: 'nNOS en eNOS zetten het aminozuur L-arginine om in stikstofmonoxide (NO). NO diffundeert direct naar naburige gladde spiercellen en activeert oplosbaar guanylaatcyclase (sGC).',
+    clinicalTip: 'Kliniek: PDE5-remmers werken alleen als er eerst NO vrijkomt door seksuele stimulatie; zonder NO wordt geen cGMP aangemaakt.',
+    actionLabel: 'Bekijk Nn. cavernosi in Atlas',
+    actionType: 'anatomy',
+    actionPayload: 'nervi-cavernosi'
+  },
+  'node-cgmp': {
+    id: 'node-cgmp',
+    title: '3. GTP → cGMP (Second messenger)',
+    subtitle: 'Intracellulaire signaalversterker',
+    detail: 'Geactiveerd guanylaatcyclase zet GTP om in cyclisch GMP (cGMP). Hoe hoger de concentratie cGMP, hoe sterker en langduriger de ontspanning van het caverneuze spierweefsel.',
+    clinicalTip: 'Kliniek: De balans tussen aanmaak door sGC en afbraak door PDE5 bepaalt de concentratie cGMP.',
+    actionLabel: 'Zet tumescentie naar Veno-occlusie (86%)',
+    actionType: 'arousal',
+    actionPayload: 86
+  },
+  'node-pde5': {
+    id: 'node-pde5',
+    title: 'PDE5-enzym (Fosfodiësterase type 5)',
+    subtitle: 'Afbraak van cGMP naar 5\'-GMP',
+    detail: 'PDE5 is een lichaamseigen enzym in het zwellichaam dat cGMP continu afbreekt naar inactief 5\'-GMP om de erectie uiteindelijk weer te kunnen beëindigen.',
+    clinicalTip: 'Farmacologie: PDE5-remmers (sildenafil, tadalafil) blokkeren deze stap, zodat cGMP hoog blijft bij seksuele prikkeling. Gecontra-indiceerd bij nitraatgebruik!',
+    actionLabel: 'Schakel PDE5-remmer aan / uit',
+    actionType: 'toggle-pde5',
+    actionPayload: null
+  },
+  'node-ca': {
+    id: 'node-ca',
+    title: '4. PKG-activatie → Ca²⁺-daling',
+    subtitle: 'Ionkanaal-regulatie',
+    detail: 'cGMP activeert proteïnekinase G (PKG). Dit opent kaliumkanalen en sluit calciumkanalen, waardoor de intracellulaire calciumconcentratie (Ca²⁺) daalt en het contractiele actine-myosinecomplex loslaat.',
+    clinicalTip: 'Fysiologie: Calciumdaling is de directe biochemische oorzaak van gladde-spierontspanning.',
+    actionLabel: 'Reset naar fysiologisch normaal',
+    actionType: 'scenario',
+    actionPayload: 'normal'
+  },
+  'node-relax': {
+    id: 'node-relax',
+    title: '5. Gladde spierrelaxatie & Vasodilatatie',
+    subtitle: 'Vulling & veno-occlusie',
+    detail: 'Door relaxatie van zowel de arteriae helicinae als de trabekelspieren stroomt arterieel bloed onder hoge druk naar binnen, zwellen de sinusoïden en start de mechanische compressie van de afvoeraderen.',
+    clinicalTip: 'Kliniek: Ook bij maximale relaxatie levert de bekkenbodem (m. ischiocavernosus) nog de laatste stijfheidssprong.',
+    actionLabel: 'Simuleer rigide piek (100%)',
+    actionType: 'arousal',
+    actionPayload: 100
+  },
+  'metric-icp': {
+    id: 'metric-icp',
+    title: 'Telemetrie: Intracaverneuze Druk (ICP)',
+    subtitle: 'Normaal: ~10 mmHg (rust) → 90–160 mmHg (erectie)',
+    detail: 'De druk binnen de corpora cavernosa bepaalt de axiale stijfheid. Rond 90–100 mmHg bereikt de druk het niveau van de systolische bloeddruk; contractie van de m. ischiocavernosus duwt de druk suprasystolisch (>120 mmHg).',
+    clinicalTip: 'Diagnostiek: Wordt experimenteel gemeten via cavernosometrie. Voor voldoende stijfheid voor penetratie is doorgaans >70–80 mmHg nodig.',
+    actionLabel: 'Bekijk bekkenbodemspieren in Atlas',
+    actionType: 'anatomy',
+    actionPayload: 'bekkenbodem-spieren'
+  },
+  'metric-flow': {
+    id: 'metric-flow',
+    title: 'Telemetrie: Cavernosa Arteriële Flow',
+    subtitle: 'Piek tijdens vulling, daalt zodra kamer vol is',
+    detail: 'Opvallend fysiologisch detail: de hoogste instroomsnelheid (40–60 mL/min) treedt op tijdens de latente en vroege tumescentiefase! Zodra de druk stijgt naar de systolische druk, daalt de netto flow naar een onderhoudsniveau.',
+    clinicalTip: 'Diagnostiek: Bij kleuren-Duplex echografie geldt een Peak Systolic Velocity (PSV) >30–35 cm/s in de a. profunda als arteriële normaalwaarde.',
+    actionLabel: 'Bekijk A. profunda in Atlas',
+    actionType: 'anatomy',
+    actionPayload: 'arteria-profunda'
+  },
+  'metric-occlusion': {
+    id: 'metric-occlusion',
+    title: 'Telemetrie: Veneuze Occlusie (CVOM)',
+    subtitle: 'Doel tijdens erectie: >90% compressie',
+    detail: 'Meet welk percentage van de subtunicale en emissaire afvoer is dichtgedrukt tussen de gezwollen sinusoïden en de tunica albuginea.',
+    clinicalTip: 'Diagnostiek: Bij kleuren-Duplex echo wijst een aanhoudend hoge End-Diastolic Velocity (EDV >5 cm/s) tijdens maximale stimulatie op veneuze lekkage.',
+    actionLabel: 'Bekijk Emissaire venen in Atlas',
+    actionType: 'anatomy',
+    actionPayload: 'venae-emissariae'
+  },
+  'metric-cgmp': {
+    id: 'metric-cgmp',
+    title: 'Telemetrie: Intracellulair cGMP-niveau',
+    subtitle: 'Balans tussen sGC (aanmaak) en PDE5 (afbraak)',
+    detail: 'Geeft de relatieve intracellulaire concentratie van cyclisch GMP weer. Zolang cGMP hoog blijft en sympathische noradrenaline laag blijft, blijft de sinusoïde ontspannen.',
+    clinicalTip: 'Farmacologie: PDE5-remmers verhogen dit signaal aanzienlijk zodra er seksuele prikkeling aanwezig is.',
+    actionLabel: 'Schakel PDE5-remmer aan / uit',
+    actionType: 'toggle-pde5',
+    actionPayload: null
+  }
+};
+
 export const PATHOLOGIES = [
   {
     id: 'priapisme',
@@ -330,12 +616,13 @@ export const PATHOLOGIES = [
     category: 'urgent',
     badge: 'Medisch spoedgeval (>4 uur)',
     visualType: 'priapism',
+    relatedAnatomyId: 'corpus-cavernosum',
     shortDesc: 'Langdurige, ongewenste erectie (>4 uur) zonder seksuele prikkel. Ischemische vorm leidt zonder spoedbehandeling tot blijvende fibrose.',
     pathophysiology: 'Bij ischemisch (low-flow) priapisme (95% van de gevallen) is de veneuze afvoer volledig geblokkeerd: de corpora cavernosa zijn keihard en pijnlijk terwijl de glans slap blijft, met zuurstoftekort en acidose tot gevolg. Non-ischemisch (high-flow) priapisme ontstaat meestal na perineaal trauma met een arteriële fistel en is pijnloos.',
     symptoms: [
       'Aanhoudende erectie langer dan 4 uur onafhankelijk van seksuele stimulatie',
       'Ischemisch: diepe, toenemende pijn, keiharde schacht maar zachte glans',
-      'Non-ischemisch: pijnloze, deels elastische erectie na stump perineaal trauma'
+      'Non-ischemisch: pijnloze, deels elastische erectie na stomp perineaal trauma'
     ],
     diagnostics: 'Caverneuze bloedgasanalyse (pO₂ < 30 mmHg, pCO₂ > 60 mmHg, pH < 7.25 wijst op ischemie) en kleuren-Doppler echografie van de peniele arteriën.',
     treatment: 'Ischemisch priapisme vereist directe spoedzorg: aspiratie van zuurstofarm bloed uit de corpora cavernosa, spoeling en intracaverneuze injectie van een alfa-agonist (fenylefrine). Bij uitblijven van effect is chirurgische shuntvorming nodig.',
@@ -347,6 +634,7 @@ export const PATHOLOGIES = [
     category: 'urgent',
     badge: 'Parafimose = Spoedgeval',
     visualType: 'phimosis',
+    relatedAnatomyId: 'preputium-frenulum',
     shortDesc: 'Fimose is een te nauwe voorhuidopening; parafimose is een achter de eikel beklemde voorhuid met afknelling van de bloedstroom.',
     pathophysiology: 'Fysiologische fimose bij jonge jongens verdwijnt meestal spontaan. Pathologische fimose ontstaat door littekenvorming (bijv. lichen sclerosus of chronische balanitis). Als een nauwe voorhuid achter de corona wordt geschoven en niet terugkomt, ontstaat een snoerende ring (parafimose) met lymfe- en veneuze stuwing.',
     symptoms: [
@@ -364,6 +652,7 @@ export const PATHOLOGIES = [
     category: 'condition',
     badge: 'Bindweefselaandoening',
     visualType: 'peyronie',
+    relatedAnatomyId: 'tunica-albuginea',
     shortDesc: 'Vorming van fibreuze bindweefselplaques in de tunica albuginea, leidend tot verkromming, verkorting of pijn bij erectie.',
     pathophysiology: 'Vermoedelijk veroorzaakt door herhaald microtrauma van de tunica albuginea met afwijkende wondgenezing en myofibroblast-activatie (TGF-β1). Het stugge littekenweefsel rekt bij erectie niet mee, waardoor de penis naar de zijde van de plaque kromtrekt.',
     symptoms: [
@@ -381,6 +670,7 @@ export const PATHOLOGIES = [
     category: 'condition',
     badge: 'Vaak vasculair signaal',
     visualType: 'ed',
+    relatedAnatomyId: 'arteria-profunda',
     shortDesc: 'Aanhoudend onvermogen (>3–6 mnd) om een erectie te krijgen of te behouden die voldoende is voor bevredigende seksuele activiteit.',
     pathophysiology: 'Meestal multifactorieel: vasculogeen (endotheeldisfunctie en atherosclerose van de kleine aa. cavernosae), neurogeen (diabetes, bekkenchirurgie), hormonaal (hypogonadisme), medicamenteus (bètablokkers, SSRI\'s) of psychogeen (prestatieangst).',
     symptoms: [
@@ -398,6 +688,7 @@ export const PATHOLOGIES = [
     category: 'condition',
     badge: 'Ontsteking',
     visualType: 'balanitis',
+    relatedAnatomyId: 'glans-penis',
     shortDesc: 'Ontsteking van de glans penis (balanitis) en vaak ook het binnenblad van de voorhuid (balanoposthitis).',
     pathophysiology: 'Ontstaat vaak door ophoping van vocht/smegma, overgroei van schimmels (Candida albicans), bacteriële infecties, irritatie door agressieve zepen of een onderliggende huidaandoening zoals lichen sclerosus of diabetes mellitus.',
     symptoms: [
@@ -406,7 +697,7 @@ export const PATHOLOGIES = [
       'Pijnlijk plassen of microscheurtjes in de voorhuid'
     ],
     diagnostics: 'Klinische beoordeling; bij recidieven kweek afnemen en bloedsuiker bepalen (diabetesuitsluiting). Bij hardnekkige plaques biopsie om premaligne afwijkingen (zoals erythroplasie van Queyrat) uit te sluiten.',
-    treatment: 'Mildevormen: spoelen met lauw water zonder zeep en goed droogdeppen. Candida: lokale antimycoticumcrème (miconazol/clotrimazol). Lichen sclerosus: sterk werkende lokale steroïden.',
+    treatment: 'Milde vormen: spoelen met lauw water zonder zeep en goed droogdeppen. Candida: lokale antimycoticumcrème (miconazol/clotrimazol). Lichen sclerosus: sterk werkende lokale steroïden.',
     redFlags: 'Niet-genezende zweertjes, bloedende wratachtige laesies of een verharde zweer (ulcus) langer dan 3 weken vereisen beoordeling door arts/dermatoloog.'
   },
   {
@@ -415,6 +706,7 @@ export const PATHOLOGIES = [
     category: 'condition',
     badge: 'Congenitaal',
     visualType: 'hypospadias',
+    relatedAnatomyId: 'urethra',
     shortDesc: 'Aangeboren anatomische variatie waarbij de plasbuisopening (meatus) niet op de top, maar aan de onderzijde (ventraal) uitmondt.',
     pathophysiology: 'Onvolledige sluiting van de urethrale groeve tijdens de foetale ontwikkeling (week 8–14). Vaak gecombineerd met een aan de onderzijde ontbrekende voorhuid ("dorsale kap") en soms een ventrale verkromming (chordee).',
     symptoms: [
@@ -432,6 +724,7 @@ export const PATHOLOGIES = [
     category: 'variant',
     badge: 'Goedaardige variant',
     visualType: 'pearly',
+    relatedAnatomyId: 'glans-penis',
     shortDesc: 'Volledig onschuldige, symmetrische rijtjes kleine witte of huidkleurige bultjes langs de rand van de eikel (corona glandis).',
     pathophysiology: 'Normale anatomische angiofibromen die voorkomen bij circa 15% tot 30% van alle mannen, meestal zichtbaar vanaf de puberteit. Het is GEEN seksueel overdraagbare aandoening (geen HPV/genitale wratten) en is niet besmettelijk.',
     symptoms: [
@@ -449,6 +742,7 @@ export const PATHOLOGIES = [
     category: 'variant',
     badge: 'Goedaardige variant',
     visualType: 'fordyce',
+    relatedAnatomyId: 'cutis-dartos',
     shortDesc: 'Kleine (1–3 mm) lichtgele of witachtige bultjes op de schachthuid of het scrotum: volkomen normale, ectopische talgklieren.',
     pathophysiology: 'Normaal aanwezige talgklieren die direct onder het oppervlakkige epitheel liggen zonder haarfollikel. Komen voor bij meer dan 70% van de volwassenen (ook in de mondslijmvliezen) en worden door androgenen vanaf de puberteit beter zichtbaar.',
     symptoms: [
@@ -462,24 +756,44 @@ export const PATHOLOGIES = [
   }
 ];
 
+export const SYMPTOM_CHECKER_TAGS = [
+  { id: 'all', label: 'Alle signalen', matchIds: null },
+  { id: 'pain-erection-4h', label: 'Pijnlijke erectie >4 uur', matchIds: ['priapisme'] },
+  { id: 'tight-foreskin', label: 'Beklemde / nauwe voorhuid', matchIds: ['fimose-parafimose'] },
+  { id: 'curvature', label: 'Kromstand / verharde schijf', matchIds: ['ziekte-van-peyronie'] },
+  { id: 'soft-erection', label: 'Erectie blijft niet stijf', matchIds: ['erectiele-disfunctie'] },
+  { id: 'redness', label: 'Roodheid, jeuk of schilfering eikel', matchIds: ['balanitis'] },
+  { id: 'corona-bumps', label: 'Witte bultjes langs eikelrand', matchIds: ['parelpapels'] },
+  { id: 'shaft-spots', label: 'Witgele plekjes op schachthuid', matchIds: ['fordyce-plekjes'] },
+  { id: 'ventral-opening', label: 'Plasopening aan onderzijde', matchIds: ['hypospadie'] }
+];
+
 export const SELF_EXAM_STEPS = [
   {
     step: 1,
+    zoneId: 'zone-shaft',
+    anatomyId: 'cutis-dartos',
     title: 'Algemene inspectie van huid & schacht',
     detail: 'Bekijk bij goed licht de huid van de schacht en de basis. Let op nieuwe verkleuringen, wondjes die niet binnen 2–3 weken genezen, of ongebruikelijke zwellingen. Onthoud dat zichtbare haarzakjes en Fordyce-plekjes volkomen normaal zijn.'
   },
   {
     step: 2,
+    zoneId: 'zone-glans',
+    anatomyId: 'preputium-frenulum',
     title: 'Voorhuid & Eikel (Glans en Corona)',
     detail: 'Schuif (indien onbesneden) de voorhuid rustig en zonder forceren terug. Spoel de ruimte onder de voorhuid dagelijks met lauw water (zonder geparfumeerde zeep) om smegma-ophoping en balanitis te voorkomen. Controleer het frenulum en de coronarand (parelpapels zijn normaal).'
   },
   {
     step: 3,
+    zoneId: 'zone-meatus',
+    anatomyId: 'fossa-navicularis-meatus',
     title: 'Plasbuisopening (Meatus) & Urinestraal',
     detail: 'Bekijk het uiteinde van de eikel: een spleetvormige, lichtroze opening zonder korstjes, afscheiding of roodheid is gezond. Let op veranderingen zoals een gespleten straal of branderig gevoel bij het plassen.'
   },
   {
     step: 4,
+    zoneId: 'zone-corpora',
+    anatomyId: 'corpus-cavernosum',
     title: 'Palpatie van de schacht (Zwellichamen)',
     detail: 'Voel in slappe toestand voorzichtig langs beide corpora cavernosa. Normaal weefsel voelt egaal en zacht-elastisch aan. Harde strengen of schijfjes (plaques) kunnen wijzen op beginnende bindweefselvorming (Peyronie) of oppervlakkige flebitis.'
   }
@@ -496,7 +810,7 @@ export const QUIZ_QUESTIONS = [
       'Corpus spongiosum'
     ],
     correctIndex: 1,
-    explanation: 'De tweelagige tunica albuginea begrensd de zwellichamen en drukt bij toenemend volume de subtunicale venulen en emissaire venen dicht, waardoor het bloed wordt vastgehouden en hoge erectiedruk ontstaat.'
+    explanation: 'De tweelagige tunica albuginea begrenst de zwellichamen en drukt bij toenemend volume de subtunicale venulen en emissaire venen dicht, waardoor het bloed wordt vastgehouden en hoge erectiedruk ontstaat.'
   },
   {
     id: 2,

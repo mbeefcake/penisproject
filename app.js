@@ -1,9 +1,12 @@
 import {
   ANATOMY_CATEGORIES,
   ANATOMY_STRUCTURES,
+  ORIENTATION_TERMS,
   HEMODYNAMIC_PHASES,
   SCENARIO_MODIFIERS,
+  HEMO_HOTSPOTS,
   PATHOLOGIES,
+  SYMPTOM_CHECKER_TAGS,
   SELF_EXAM_STEPS,
   QUIZ_QUESTIONS
 } from './data.js';
@@ -41,21 +44,24 @@ function selectTab(targetTab) {
   });
 }
 
+function goToTab(tabId) {
+  const target = tabs.find((t) => t.id === tabId);
+  if (target) {
+    selectTab(target);
+    target.focus();
+  }
+}
+
 function initTabKeyboardFallback() {
   tablist.addEventListener('keydown', (event) => {
     const currentIndex = tabs.indexOf(document.activeElement);
     if (currentIndex === -1) return;
 
     let nextIndex = null;
-    if (event.key === 'ArrowRight') {
-      nextIndex = (currentIndex + 1) % tabs.length;
-    } else if (event.key === 'ArrowLeft') {
-      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-    } else if (event.key === 'Home') {
-      nextIndex = 0;
-    } else if (event.key === 'End') {
-      nextIndex = tabs.length - 1;
-    }
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    else if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = tabs.length - 1;
 
     if (nextIndex !== null) {
       event.preventDefault();
@@ -65,7 +71,6 @@ function initTabKeyboardFallback() {
   });
 }
 
-// Conditioneel laden van focusgroup-polyfill wanneer native ondersteuning ontbreekt
 if (!(Object.hasOwn(HTMLElement.prototype, 'focusGroup'))) {
   import('@microsoft/focusgroup-polyfill')
     .then(({ polyfill }) => polyfill())
@@ -74,22 +79,17 @@ if (!(Object.hasOwn(HTMLElement.prototype, 'focusGroup'))) {
 
 for (const tab of tabs) {
   tab.addEventListener('click', () => selectTab(tab));
-  // Selection-follows-focus wanneer focusgroup pijltjestoetsen verplaatst
   tab.addEventListener('focus', () => selectTab(tab));
 }
 
-// Sync tab & panel wanneer browser find-in-page verborgen inhoud openklapt
 for (const panel of panels) {
   panel.addEventListener('beforematch', () => {
     const tabId = panel.getAttribute('aria-labelledby');
     const matchingTab = tabs.find((t) => t.id === tabId);
-    if (matchingTab) {
-      selectTab(matchingTab);
-    }
+    if (matchingTab) selectTab(matchingTab);
   });
 }
 
-// IntersectionObserver fallback voor scroll-fades wanneer scroll-driven animations ontbreken
 if (!CSS.supports('animation-timeline', 'scroll()')) {
   for (const scroller of document.querySelectorAll('.scroller')) {
     const first = scroller.firstElementChild;
@@ -113,6 +113,12 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
   }
 }
 
+// Header spoedwijzer knop -> schakel naar Tab 3 op urgent filter
+document.getElementById('btn-quick-urgent').addEventListener('click', () => {
+  goToTab('tab-pathology');
+  setPathologyFilter('urgent');
+});
+
 // ============================================================================
 // 2. Interactieve Anatomie Atlas
 // ============================================================================
@@ -121,17 +127,40 @@ const svgSagittal = document.getElementById('svg-sagittal');
 const svgTransverse = document.getElementById('svg-transverse');
 const zoomFrame = document.getElementById('svg-zoom-frame');
 const zoomReadout = document.getElementById('zoom-readout');
+const svgTooltip = document.getElementById('svg-tooltip');
+const atlasStateToggle = document.getElementById('atlas-state-toggle');
 const structureChipsContainer = document.getElementById('structure-chips');
 const inspOpenPathologyBtn = document.getElementById('insp-open-pathology');
+const inspGotoHemoBtn = document.getElementById('insp-goto-hemo');
+const inspDetailsBox = document.getElementById('insp-details');
+const inspCounter = document.getElementById('insp-counter');
 
 let currentView = 'sagittal';
 let currentZoom = 1;
+let isAtlasErect = false;
 let selectedStructureId = 'corpus-cavernosum';
+
+function getVisibleStructures() {
+  return ANATOMY_STRUCTURES.filter((s) => s.views.includes(currentView));
+}
+
+function clearAtlasSelections() {
+  for (const el of document.querySelectorAll('.anat-part, .label-callout, .orient-clickable')) {
+    el.classList.remove('is-selected');
+  }
+  for (const chip of structureChipsContainer.querySelectorAll('.struct-chip')) {
+    chip.classList.remove('is-active');
+  }
+}
 
 function updateInspector(structureId) {
   const item = ANATOMY_STRUCTURES.find((s) => s.id === structureId);
   if (!item) return;
   selectedStructureId = item.id;
+
+  const visibleList = getVisibleStructures();
+  const idx = visibleList.findIndex((s) => s.id === item.id);
+  inspCounter.textContent = idx >= 0 ? `${idx + 1} / ${visibleList.length}` : `— / ${visibleList.length}`;
 
   const categoryInfo = ANATOMY_CATEGORIES[item.category];
   const catBadge = document.getElementById('insp-category');
@@ -141,10 +170,19 @@ function updateInspector(structureId) {
   document.getElementById('insp-latin').textContent = item.latin;
   document.getElementById('insp-title').textContent = item.name;
   document.getElementById('insp-summary').textContent = item.summary;
+
+  inspDetailsBox.hidden = false;
   document.getElementById('insp-histology').textContent = item.histology;
   document.getElementById('insp-physiology').textContent = item.physiology;
   document.getElementById('insp-neurovascular').textContent = item.neurovascular;
   document.getElementById('insp-clinical').textContent = item.clinical;
+
+  if (item.hemoFocusId && HEMO_HOTSPOTS[item.hemoFocusId]) {
+    inspGotoHemoBtn.hidden = false;
+    inspGotoHemoBtn.dataset.hemoFocusId = item.hemoFocusId;
+  } else {
+    inspGotoHemoBtn.hidden = true;
+  }
 
   const related = PATHOLOGIES.find((p) => p.id === item.relatedPathologyId);
   if (related) {
@@ -155,7 +193,7 @@ function updateInspector(structureId) {
     inspOpenPathologyBtn.hidden = true;
   }
 
-  // Highlight in actieve en verborgen SVGs + chips
+  clearAtlasSelections();
   for (const el of document.querySelectorAll('.anat-part')) {
     el.classList.toggle('is-selected', el.dataset.structure === item.id);
   }
@@ -167,8 +205,37 @@ function updateInspector(structureId) {
   }
 }
 
+function showOrientationInInspector(orientKey) {
+  const info = ORIENTATION_TERMS[orientKey];
+  if (!info) return;
+
+  const catBadge = document.getElementById('insp-category');
+  catBadge.textContent = info.badge;
+  catBadge.style.color = 'var(--accent-color)';
+
+  document.getElementById('insp-latin').textContent = info.latin;
+  document.getElementById('insp-title').textContent = info.title;
+  document.getElementById('insp-summary').textContent = info.summary;
+  inspCounter.textContent = 'Oriëntatie';
+
+  // Gebruik 1ste detailblok voor anatomische toelichting
+  inspDetailsBox.hidden = false;
+  document.getElementById('insp-histology').textContent = info.details;
+  document.getElementById('insp-physiology').textContent = 'Wordt wereldwijd gebruikt als vaste richtingsaanduiding ongeacht de houding van de penis.';
+  document.getElementById('insp-neurovascular').textContent = 'Klik op een structuur of chip om terug te keren naar de weefsels.';
+  document.getElementById('insp-clinical').textContent = 'Cruciaal voor nauwkeurige beschrijving van injectieplekken, kromstand of operatierichtingen.';
+
+  inspGotoHemoBtn.hidden = true;
+  inspOpenPathologyBtn.hidden = true;
+
+  clearAtlasSelections();
+  for (const el of document.querySelectorAll(`.orient-clickable[data-orient="${orientKey}"]`)) {
+    el.classList.add('is-selected');
+  }
+}
+
 function renderStructureChips() {
-  const visibleStructures = ANATOMY_STRUCTURES.filter((s) => s.views.includes(currentView));
+  const visibleStructures = getVisibleStructures();
   structureChipsContainer.innerHTML = '';
 
   for (const item of visibleStructures) {
@@ -176,9 +243,7 @@ function renderStructureChips() {
     btn.type = 'button';
     btn.className = 'struct-chip';
     btn.dataset.structure = item.id;
-    if (item.id === selectedStructureId) {
-      btn.classList.add('is-active');
-    }
+    if (item.id === selectedStructureId) btn.classList.add('is-active');
 
     const dot = document.createElement('i');
     dot.className = 'swatch';
@@ -207,7 +272,7 @@ function switchAnatomyView(view) {
     (s) => s.id === selectedStructureId && s.views.includes(view)
   );
   if (!currentValid) {
-    const firstMatch = ANATOMY_STRUCTURES.find((s) => s.views.includes(view));
+    const firstMatch = getVisibleStructures()[0];
     if (firstMatch) selectedStructureId = firstMatch.id;
   }
 
@@ -215,11 +280,32 @@ function switchAnatomyView(view) {
   updateInspector(selectedStructureId);
 }
 
+function focusStructureInAtlas(structureId) {
+  const target = ANATOMY_STRUCTURES.find((s) => s.id === structureId);
+  if (!target) return;
+
+  goToTab('tab-anatomy');
+  if (!target.views.includes(currentView)) {
+    switchAnatomyView(target.views[0]);
+  }
+  updateInspector(target.id);
+}
+
 for (const btn of document.querySelectorAll('.view-btn')) {
   btn.addEventListener('click', () => switchAnatomyView(btn.dataset.view));
 }
 
-// Laag-toggles voor beide SVGs
+atlasStateToggle.addEventListener('click', () => {
+  isAtlasErect = !isAtlasErect;
+  atlasStateToggle.setAttribute('aria-pressed', String(isAtlasErect));
+  atlasStateToggle.classList.toggle('is-erect', isAtlasErect);
+  atlasStateToggle.textContent = isAtlasErect
+    ? 'Staat: Erect (Doorbloeding ×10)'
+    : 'Staat: Flaccide (Rust)';
+  svgSagittal.classList.toggle('is-erect', isAtlasErect);
+  svgTransverse.classList.toggle('is-erect', isAtlasErect);
+});
+
 for (const toggle of document.querySelectorAll('[data-layer-toggle]')) {
   toggle.addEventListener('change', () => {
     const layerName = toggle.dataset.layerToggle;
@@ -230,25 +316,78 @@ for (const toggle of document.querySelectorAll('[data-layer-toggle]')) {
   });
 }
 
-// Klik- en toetsenbord-interactie op SVG-onderdelen en labels
-function bindAnatomySelection(elements, attr) {
+// Zwevende hover-tooltip in SVG
+function showTooltip(title, subtitle) {
+  svgTooltip.innerHTML = '';
+  const strong = document.createElement('strong');
+  strong.textContent = title;
+  const span = document.createElement('span');
+  span.textContent = subtitle;
+  svgTooltip.append(strong, span);
+  svgTooltip.hidden = false;
+}
+
+function hideTooltip() {
+  svgTooltip.hidden = true;
+}
+
+function bindInteractiveTarget(elements, attr, handler, tooltipResolver) {
   for (const el of elements) {
-    const select = () => {
-      const id = el.getAttribute(attr);
-      if (id) updateInspector(id);
+    const trigger = (event) => {
+      event.stopPropagation();
+      const val = el.getAttribute(attr);
+      if (val) handler(val);
     };
-    el.addEventListener('click', select);
+    el.addEventListener('click', trigger);
     el.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        select();
+        trigger(event);
       }
     });
+    if (tooltipResolver) {
+      el.addEventListener('pointerenter', () => {
+        const info = tooltipResolver(el.getAttribute(attr));
+        if (info) showTooltip(info.title, info.subtitle);
+      });
+      el.addEventListener('pointerleave', hideTooltip);
+      el.addEventListener('focus', () => {
+        const info = tooltipResolver(el.getAttribute(attr));
+        if (info) showTooltip(info.title, info.subtitle);
+      });
+      el.addEventListener('blur', hideTooltip);
+    }
   }
 }
 
-bindAnatomySelection(document.querySelectorAll('.anat-part'), 'data-structure');
-bindAnatomySelection(document.querySelectorAll('.label-callout'), 'data-target');
+const structureTooltip = (id) => {
+  const s = ANATOMY_STRUCTURES.find((item) => item.id === id);
+  return s ? { title: s.name, subtitle: `${s.latin} — klik voor details` } : null;
+};
+
+const orientTooltip = (key) => {
+  const o = ORIENTATION_TERMS[key];
+  return o ? { title: o.title, subtitle: `${o.latin} — klik voor uitleg` } : null;
+};
+
+bindInteractiveTarget(document.querySelectorAll('.anat-part'), 'data-structure', updateInspector, structureTooltip);
+bindInteractiveTarget(document.querySelectorAll('.label-callout'), 'data-target', updateInspector, structureTooltip);
+bindInteractiveTarget(document.querySelectorAll('.orient-clickable'), 'data-orient', showOrientationInInspector, orientTooltip);
+
+// Vorige / Volgende structuurknoppen
+document.getElementById('insp-prev').addEventListener('click', () => {
+  const list = getVisibleStructures();
+  const idx = list.findIndex((s) => s.id === selectedStructureId);
+  const prevIdx = idx <= 0 ? list.length - 1 : idx - 1;
+  if (list[prevIdx]) updateInspector(list[prevIdx].id);
+});
+
+document.getElementById('insp-next').addEventListener('click', () => {
+  const list = getVisibleStructures();
+  const idx = list.findIndex((s) => s.id === selectedStructureId);
+  const nextIdx = idx === -1 || idx >= list.length - 1 ? 0 : idx + 1;
+  if (list[nextIdx]) updateInspector(list[nextIdx].id);
+});
 
 // Zoom controls
 function applyZoom(nextZoom) {
@@ -271,6 +410,12 @@ inspOpenPathologyBtn.addEventListener('click', () => {
   if (pathId) openClinicalDialog(pathId);
 });
 
+inspGotoHemoBtn.addEventListener('click', () => {
+  const hemoId = inspGotoHemoBtn.dataset.hemoFocusId;
+  goToTab('tab-physiology');
+  if (hemoId) selectHemoHotspot(hemoId);
+});
+
 // ============================================================================
 // 3. Hemodynamica & Erectiefysiologie Simulator
 // ============================================================================
@@ -280,6 +425,13 @@ const arousalValueLabel = document.getElementById('arousal-value');
 const scenarioSelect = document.getElementById('scenario-select');
 const scenarioDesc = document.getElementById('scenario-desc');
 const presetButtons = Array.from(document.querySelectorAll('.preset-btn'));
+const playCycleBtn = document.getElementById('btn-play-cycle');
+const stressPulseBtn = document.getElementById('btn-stress-pulse');
+const hotspotActionBtn = document.getElementById('hotspot-action');
+
+let selectedHemoId = 'hemo-sinusoid';
+let cycleIntervalId = null;
+let cycleDirection = 1;
 
 function lerp(a, b, t) {
   return a + (b - a) * t;
@@ -291,7 +443,6 @@ function updateHemodynamics() {
   arousalValueLabel.textContent = `${arousal}%`;
   scenarioDesc.textContent = scenario.description;
 
-  // Fallback --progress update voor oudere browsers zonder accent-color
   if (!CSS.supports('accent-color', '#000')) {
     arousalSlider.style.setProperty('--progress', `${arousal}%`);
   }
@@ -331,13 +482,11 @@ function updateHemodynamics() {
 
   document.getElementById('metric-muscle').textContent = phase.muscleState;
 
-  // Synchroniseer actieve preset-knop
   for (const btn of presetButtons) {
     const val = Number(btn.dataset.arousal);
     btn.classList.toggle('is-active', val >= phase.min && val <= phase.max);
   }
 
-  // Dynamische SVG-visualisatie bijwerken
   const effectiveScale = Math.min(
     1.05,
     0.34 + (phase.sinusoidScale - 0.34) * (occlusion > 0 ? Math.max(0.55, icp / 110) : 1)
@@ -356,7 +505,6 @@ function updateHemodynamics() {
   icpInline.setAttribute('y', (sinusoidCy + 14).toFixed(1));
   icpInline.textContent = `ICP: ${icp} mmHg`;
 
-  // Arteria helicina diameter & stroomsnelheid
   const arteryEl = document.getElementById('hemo-artery');
   const arteryFlowEl = document.getElementById('hemo-arterial-flow');
   const effectiveArteryWidth = Math.max(3, phase.arteryWidth * (scenario.id === 'endothelial' ? 0.55 : 1));
@@ -364,7 +512,6 @@ function updateHemodynamics() {
   arteryFlowEl.style.animationDuration = `${Math.max(0.25, 2.2 - flow / 32).toFixed(2)}s`;
   arteryFlowEl.style.opacity = flow > 2 ? '0.95' : '0.25';
 
-  // Venule compressie (CVOM) tegen tunica albuginea
   const veinEl = document.getElementById('hemo-venule');
   const veinFlowEl = document.getElementById('hemo-venous-flow');
   const effectiveVeinWidth = Math.max(1.5, 13 * (1 - occlusion / 108));
@@ -378,7 +525,6 @@ function updateHemodynamics() {
       ? `Veneuze occlusie (${occlusion}%): venulen dichtgedrukt!`
       : `Subtunicale venulen open (${100 - occlusion}% afvoer)`;
 
-  // Biochemische cascade nodes highlighten
   const activeStimulus = arousal > 15;
   document.getElementById('node-para').classList.toggle('is-active', activeStimulus);
   document.getElementById('node-no').classList.toggle(
@@ -395,11 +541,104 @@ function updateHemodynamics() {
   pde5Text.textContent = scenario.pde5Blocked ? 'GEBLOKKEERD!' : "cGMP → 5'-GMP";
 }
 
-arousalSlider.addEventListener('input', updateHemodynamics);
+function selectHemoHotspot(hemoId) {
+  const info = HEMO_HOTSPOTS[hemoId];
+  if (!info) return;
+  selectedHemoId = hemoId;
+
+  for (const el of document.querySelectorAll('.hemo-clickable')) {
+    el.classList.toggle('is-selected', el.dataset.hemoId === hemoId);
+  }
+
+  document.getElementById('hotspot-subtitle').textContent = info.subtitle;
+  document.getElementById('hotspot-title').textContent = info.title;
+  document.getElementById('hotspot-detail').textContent = info.detail;
+  document.getElementById('hotspot-tip').textContent = info.clinicalTip;
+  hotspotActionBtn.textContent = info.actionLabel;
+}
+
+function stopCycle() {
+  if (cycleIntervalId !== null) {
+    clearInterval(cycleIntervalId);
+    cycleIntervalId = null;
+  }
+  playCycleBtn.textContent = '▶ Speel erectiecyclus af';
+}
+
+function startCycle() {
+  if (cycleIntervalId !== null) {
+    stopCycle();
+    return;
+  }
+  if (Number(arousalSlider.value) >= 98) {
+    arousalSlider.value = '0';
+  }
+  cycleDirection = 1;
+  playCycleBtn.textContent = '⏸ Pauzeer cyclus';
+
+  cycleIntervalId = setInterval(() => {
+    const current = Number(arousalSlider.value);
+    const next = current + cycleDirection * 2;
+    if (next >= 100) {
+      arousalSlider.value = '100';
+      cycleDirection = -1;
+    } else if (next <= 0) {
+      arousalSlider.value = '0';
+      stopCycle();
+    } else {
+      arousalSlider.value = String(next);
+    }
+    updateHemodynamics();
+  }, 75);
+}
+
+function triggerStressPulse() {
+  stopCycle();
+  arousalSlider.value = '12';
+  scenarioSelect.value = 'normal';
+  updateHemodynamics();
+  selectHemoHotspot('hemo-trabecula');
+}
+
+playCycleBtn.addEventListener('click', startCycle);
+stressPulseBtn.addEventListener('click', triggerStressPulse);
+
+hotspotActionBtn.addEventListener('click', () => {
+  const info = HEMO_HOTSPOTS[selectedHemoId];
+  if (!info) return;
+
+  if (info.actionType === 'anatomy') {
+    focusStructureInAtlas(info.actionPayload);
+  } else if (info.actionType === 'scenario') {
+    scenarioSelect.value = info.actionPayload;
+    if (Number(arousalSlider.value) < 60) arousalSlider.value = '80';
+    updateHemodynamics();
+  } else if (info.actionType === 'toggle-pde5') {
+    scenarioSelect.value = scenarioSelect.value === 'pde5i' ? 'normal' : 'pde5i';
+    if (Number(arousalSlider.value) < 50) arousalSlider.value = '75';
+    updateHemodynamics();
+  } else if (info.actionType === 'stress') {
+    triggerStressPulse();
+  } else if (info.actionType === 'cycle') {
+    startCycle();
+  } else if (info.actionType === 'arousal') {
+    stopCycle();
+    arousalSlider.value = String(info.actionPayload);
+    updateHemodynamics();
+  }
+});
+
+bindInteractiveTarget(document.querySelectorAll('.hemo-clickable'), 'data-hemo-id', selectHemoHotspot);
+
+arousalSlider.addEventListener('input', () => {
+  stopCycle();
+  updateHemodynamics();
+});
 scenarioSelect.addEventListener('change', updateHemodynamics);
 
 for (const btn of presetButtons) {
   btn.addEventListener('click', () => {
+    stopCycle();
     arousalSlider.value = btn.dataset.arousal;
     updateHemodynamics();
   });
@@ -412,9 +651,44 @@ for (const btn of presetButtons) {
 const pathologyGrid = document.getElementById('pathology-grid');
 const pathologySearch = document.getElementById('pathology-search');
 const filterButtons = Array.from(document.querySelectorAll('.filter-btn'));
+const symptomBar = document.getElementById('symptom-checker-bar');
 const clinicalDialog = document.getElementById('clinical-dialog');
+const dialogGotoAnatomyBtn = document.getElementById('dialog-goto-anatomy');
 
 let activePathologyFilter = 'all';
+let activeSymptomTagId = 'all';
+let activeDialogPathology = null;
+
+function setPathologyFilter(filterValue) {
+  activePathologyFilter = filterValue;
+  for (const b of filterButtons) {
+    b.classList.toggle('is-active', b.dataset.filter === filterValue);
+  }
+  renderPathologyGrid();
+}
+
+function renderSymptomChecker() {
+  symptomBar.innerHTML = '';
+  for (const tag of SYMPTOM_CHECKER_TAGS) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'symptom-chip';
+    if (tag.id === activeSymptomTagId) btn.classList.add('is-active');
+    btn.textContent = tag.label;
+    btn.addEventListener('click', () => {
+      activeSymptomTagId = tag.id;
+      if (tag.id !== 'all') {
+        activePathologyFilter = 'all';
+        for (const b of filterButtons) {
+          b.classList.toggle('is-active', b.dataset.filter === 'all');
+        }
+      }
+      renderSymptomChecker();
+      renderPathologyGrid();
+    });
+    symptomBar.appendChild(btn);
+  }
+}
 
 function renderPathologyGraphic(visualType, compact = false) {
   const height = compact ? 84 : 138;
@@ -493,6 +767,7 @@ function renderPathologyGraphic(visualType, compact = false) {
 function openClinicalDialog(pathologyId) {
   const item = PATHOLOGIES.find((p) => p.id === pathologyId);
   if (!item) return;
+  activeDialogPathology = item;
 
   document.getElementById('dialog-badge').textContent = item.badge;
   document.getElementById('dialog-title').textContent = item.name;
@@ -511,15 +786,20 @@ function openClinicalDialog(pathologyId) {
     symptomsList.appendChild(li);
   }
 
+  dialogGotoAnatomyBtn.hidden = !item.relatedAnatomyId;
   clinicalDialog.showModal();
 }
 
-// MANDATORY dialog guide: reset returnValue bij sluiten
+dialogGotoAnatomyBtn.addEventListener('click', () => {
+  const anatomyId = activeDialogPathology?.relatedAnatomyId;
+  clinicalDialog.close();
+  if (anatomyId) focusStructureInAtlas(anatomyId);
+});
+
 clinicalDialog.addEventListener('close', () => {
   clinicalDialog.returnValue = '';
 });
 
-// MANDATORY light-dismiss fallback voor browsers zonder closedby-ondersteuning
 if (!('closedBy' in HTMLDialogElement.prototype)) {
   clinicalDialog.addEventListener('click', (event) => {
     if (event.target !== clinicalDialog) return;
@@ -536,21 +816,24 @@ if (!('closedBy' in HTMLDialogElement.prototype)) {
 
 function renderPathologyGrid() {
   const query = pathologySearch.value.trim().toLowerCase();
+  const activeTag = SYMPTOM_CHECKER_TAGS.find((t) => t.id === activeSymptomTagId);
+
   const filtered = PATHOLOGIES.filter((item) => {
     const matchesCat = activePathologyFilter === 'all' || item.category === activePathologyFilter;
+    const matchesSymptom = !activeTag || !activeTag.matchIds || activeTag.matchIds.includes(item.id);
     const matchesQuery =
       !query ||
       item.name.toLowerCase().includes(query) ||
       item.shortDesc.toLowerCase().includes(query) ||
       item.pathophysiology.toLowerCase().includes(query);
-    return matchesCat && matchesQuery;
+    return matchesCat && matchesSymptom && matchesQuery;
   });
 
   pathologyGrid.innerHTML = '';
 
   if (filtered.length === 0) {
     const empty = document.createElement('p');
-    empty.textContent = 'Geen ziektebeelden gevonden voor deze zoekopdracht.';
+    empty.textContent = 'Geen ziektebeelden gevonden voor deze filtercombinatie.';
     pathologyGrid.appendChild(empty);
     return;
   }
@@ -558,6 +841,18 @@ function renderPathologyGrid() {
   for (const item of filtered) {
     const card = document.createElement('article');
     card.className = `pathology-card is-${item.category}`;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `Open klinisch dossier: ${item.name}`);
+
+    const open = () => openClinicalDialog(item.id);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        open();
+      }
+    });
 
     const top = document.createElement('div');
     top.className = 'path-card-top';
@@ -577,53 +872,176 @@ function renderPathologyGrid() {
     const desc = document.createElement('p');
     desc.textContent = item.shortDesc;
 
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn-ghost';
-    btn.textContent = 'Bekijk klinisch dossier';
-    btn.addEventListener('click', () => openClinicalDialog(item.id));
+    const cta = document.createElement('span');
+    cta.className = 'btn-ghost';
+    cta.style.textAlign = 'center';
+    cta.textContent = 'Bekijk klinisch dossier →';
 
-    card.append(top, thumb, title, desc, btn);
+    card.append(top, thumb, title, desc, cta);
     pathologyGrid.appendChild(card);
   }
 }
 
 for (const btn of filterButtons) {
   btn.addEventListener('click', () => {
-    activePathologyFilter = btn.dataset.filter;
-    for (const b of filterButtons) {
-      b.classList.toggle('is-active', b === btn);
-    }
-    renderPathologyGrid();
+    activeSymptomTagId = 'all';
+    renderSymptomChecker();
+    setPathologyFilter(btn.dataset.filter);
   });
 }
 
 pathologySearch.addEventListener('input', renderPathologyGrid);
 
 // ============================================================================
-// 5. Zelfonderzoek & Medische Kennistest (Quiz)
+// 5. Interactief Zelfonderzoek & Medische Kennistest (Quiz)
 // ============================================================================
 
 const examStepsList = document.getElementById('exam-steps');
+const examProgress = document.getElementById('exam-progress');
+const examProgressText = document.getElementById('exam-progress-text');
+const svgSelfExam = document.getElementById('svg-self-exam');
+const btnExamUncircumcised = document.getElementById('btn-exam-uncircumcised');
+const btnExamCircumcised = document.getElementById('btn-exam-circumcised');
+const btnRetractForeskin = document.getElementById('btn-retract-foreskin');
+const cardUncircumcised = document.getElementById('card-uncircumcised');
+const cardCircumcised = document.getElementById('card-circumcised');
+
 const quizContainer = document.getElementById('quiz-container');
 const quizProgress = document.getElementById('quiz-progress');
 const quizProgressText = document.getElementById('quiz-progress-text');
+
+const completedExamSteps = new Set();
+let activeExamStep = 1;
+let isExamCircumcised = false;
+let isForeskinRetracted = false;
 
 let quizIndex = 0;
 let quizScore = 0;
 let quizAnswered = false;
 
+function setActiveExamStep(stepNumber) {
+  activeExamStep = stepNumber;
+  const stepData = SELF_EXAM_STEPS.find((s) => s.step === stepNumber);
+  if (!stepData) return;
+
+  for (const li of examStepsList.querySelectorAll('li')) {
+    li.classList.toggle('is-active', Number(li.dataset.step) === stepNumber);
+  }
+  for (const zone of svgSelfExam.querySelectorAll('.exam-zone')) {
+    zone.classList.toggle('is-active', zone.dataset.zone === stepData.zoneId);
+  }
+}
+
+function updateExamChecklistProgress() {
+  const count = completedExamSteps.size;
+  examProgress.value = count;
+  examProgressText.textContent = `${count} van ${SELF_EXAM_STEPS.length} stappen afgevinkt`;
+}
+
+function updateExamAnatomyMode(circumcised) {
+  isExamCircumcised = circumcised;
+  svgSelfExam.classList.toggle('is-circumcised', circumcised);
+  btnExamUncircumcised.classList.toggle('is-active', !circumcised);
+  btnExamUncircumcised.setAttribute('aria-pressed', String(!circumcised));
+  btnExamCircumcised.classList.toggle('is-active', circumcised);
+  btnExamCircumcised.setAttribute('aria-pressed', String(circumcised));
+
+  cardUncircumcised.classList.toggle('is-selected', !circumcised);
+  cardUncircumcised.setAttribute('aria-pressed', String(!circumcised));
+  cardCircumcised.classList.toggle('is-selected', circumcised);
+  cardCircumcised.setAttribute('aria-pressed', String(circumcised));
+
+  btnRetractForeskin.disabled = circumcised;
+  if (circumcised) {
+    isForeskinRetracted = false;
+    svgSelfExam.classList.remove('is-retracted');
+    btnRetractForeskin.classList.remove('is-active');
+    btnRetractForeskin.setAttribute('aria-pressed', 'false');
+  }
+}
+
+btnExamUncircumcised.addEventListener('click', () => updateExamAnatomyMode(false));
+btnExamCircumcised.addEventListener('click', () => updateExamAnatomyMode(true));
+
+cardUncircumcised.addEventListener('click', () => updateExamAnatomyMode(false));
+cardUncircumcised.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    updateExamAnatomyMode(false);
+  }
+});
+
+cardCircumcised.addEventListener('click', () => updateExamAnatomyMode(true));
+cardCircumcised.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    updateExamAnatomyMode(true);
+  }
+});
+
+btnRetractForeskin.addEventListener('click', () => {
+  if (isExamCircumcised) return;
+  isForeskinRetracted = !isForeskinRetracted;
+  svgSelfExam.classList.toggle('is-retracted', isForeskinRetracted);
+  btnRetractForeskin.classList.toggle('is-active', isForeskinRetracted);
+  btnRetractForeskin.setAttribute('aria-pressed', String(isForeskinRetracted));
+  setActiveExamStep(2);
+});
+
+for (const zone of svgSelfExam.querySelectorAll('.exam-zone')) {
+  const select = (e) => {
+    e.stopPropagation();
+    setActiveExamStep(Number(zone.dataset.step));
+  };
+  zone.addEventListener('click', select);
+  zone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      select(e);
+    }
+  });
+}
+
+for (const flagBtn of document.querySelectorAll('[data-open-pathology]')) {
+  flagBtn.addEventListener('click', () => openClinicalDialog(flagBtn.dataset.openPathology));
+}
+
 function renderExamSteps() {
   examStepsList.innerHTML = '';
   for (const item of SELF_EXAM_STEPS) {
     const li = document.createElement('li');
+    li.dataset.step = String(item.step);
+
+    const row = document.createElement('div');
+    row.className = 'exam-step-row';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'exam-step-check';
+    checkbox.id = `exam-check-${item.step}`;
+    checkbox.setAttribute('aria-label', `Markeer stap ${item.step} als gecontroleerd`);
+    checkbox.checked = completedExamSteps.has(item.step);
+    checkbox.addEventListener('click', (e) => e.stopPropagation());
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) completedExamSteps.add(item.step);
+      else completedExamSteps.delete(item.step);
+      updateExamChecklistProgress();
+      setActiveExamStep(item.step);
+    });
+
+    const content = document.createElement('div');
     const title = document.createElement('strong');
     title.textContent = `${item.step}. ${item.title}`;
     const detail = document.createElement('span');
     detail.textContent = item.detail;
-    li.append(title, detail);
+    content.append(title, detail);
+
+    row.append(checkbox, content);
+    li.appendChild(row);
+    li.addEventListener('click', () => setActiveExamStep(item.step));
     examStepsList.appendChild(li);
   }
+  setActiveExamStep(activeExamStep);
 }
 
 function renderQuiz() {
@@ -721,6 +1139,9 @@ function renderQuiz() {
 
 switchAnatomyView('sagittal');
 updateHemodynamics();
+selectHemoHotspot('hemo-sinusoid');
+renderSymptomChecker();
 renderPathologyGrid();
 renderExamSteps();
+updateExamChecklistProgress();
 renderQuiz();

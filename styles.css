@@ -409,6 +409,19 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+}
+
+.medical-notice-btn {
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.12s ease;
+}
+
+.medical-notice-btn:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
 }
 
 .medical-notice strong {
@@ -632,6 +645,19 @@ body {
    Tab 1: Anatomie Atlas
    ========================================================================== */
 
+.atlas-header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.state-toggle-btn.is-erect {
+  background: color-mix(in srgb, var(--cat-vascular) 14%, var(--surface-card));
+  border-color: var(--cat-vascular);
+  color: var(--cat-vascular);
+}
+
 .atlas-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
@@ -708,6 +734,7 @@ body {
 }
 
 .svg-viewport {
+  position: relative;
   background: var(--surface-inset);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
@@ -716,6 +743,31 @@ body {
   display: grid;
   place-items: center;
   padding: 0.5rem;
+}
+
+.svg-tooltip {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 10;
+  pointer-events: none;
+  background: var(--surface-card);
+  border: 1px solid var(--accent-color);
+  border-radius: 8px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  max-width: 280px;
+}
+
+.svg-tooltip strong {
+  display: block;
+  color: var(--text);
+}
+
+.svg-tooltip span {
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .svg-zoom-frame {
@@ -730,8 +782,37 @@ body {
   display: block;
 }
 
+.anatomy-svg.is-erect #sag-cavernosum-shape {
+  filter: saturate(1.35) brightness(0.96);
+}
+
+.anatomy-svg.is-erect #sag-dorsal-artery,
+.anatomy-svg.is-erect #sag-profunda-artery {
+  stroke-width: 6.5px;
+}
+
 .svg-layer.is-hidden {
   display: none;
+}
+
+.svg-hit-area {
+  pointer-events: stroke;
+}
+
+.orient-clickable {
+  cursor: pointer;
+}
+
+.orient-clickable:hover rect,
+.orient-clickable:focus-visible rect,
+.orient-clickable.is-selected rect {
+  fill: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  stroke: var(--accent-color);
+  stroke-width: 1;
+}
+
+.orient-clickable:focus-visible {
+  outline: none;
 }
 
 .orient-text {
@@ -761,13 +842,34 @@ body {
 
 .anat-part:hover,
 .anat-part:focus-visible {
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-color) 70%, transparent));
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-color) 75%, transparent));
   outline: none;
 }
 
 .anat-part.is-selected {
-  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent-color) 90%, transparent));
-  stroke-width: 4.5px;
+  filter: drop-shadow(0 0 9px color-mix(in srgb, var(--accent-color) 95%, transparent));
+}
+
+.anat-part.is-selected:not(.hit-stroke-group) {
+  stroke-width: 4px;
+}
+
+.hit-stroke-group.is-selected path:not(.svg-hit-area) {
+  stroke-width: 6.5px;
+}
+
+.label-callout {
+  cursor: pointer;
+}
+
+.label-callout:focus-visible {
+  outline: none;
+}
+
+.label-callout:hover text,
+.label-callout:focus-visible text {
+  fill: var(--accent-color);
+  text-decoration: underline;
 }
 
 .svg-labels line {
@@ -835,13 +937,33 @@ body {
   top: 7.5rem;
 }
 
-.inspector-badge-row {
+.inspector-nav-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.6rem;
+}
+
+.inspector-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inspector-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.insp-counter {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 .cat-badge {
@@ -903,12 +1025,21 @@ body {
 .inspector-actions {
   margin-top: 1rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 /* ==========================================================================
    Tab 2: Hemodynamica & Fysiologie Simulator
    ========================================================================== */
+
+.hemo-playback-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
 
 .hemo-controls-card {
   background: var(--surface-card);
@@ -1053,6 +1184,60 @@ body {
   stroke-width: 2.2;
 }
 
+.hemo-clickable {
+  cursor: pointer;
+  transition: filter 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+svg .hemo-clickable:hover,
+svg .hemo-clickable:focus-visible {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-color) 80%, transparent));
+  outline: none;
+}
+
+svg .hemo-clickable.is-selected:not(.cascade-node) {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent-color) 95%, transparent));
+}
+
+.cascade-node.is-selected rect {
+  stroke: var(--accent-color);
+  stroke-width: 3;
+}
+
+.hemo-hotspot-inspector {
+  margin-top: 0.9rem;
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--accent-color);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.hotspot-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.hotspot-header h4 {
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+}
+
+.hemo-hotspot-inspector p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.hotspot-tip {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 #hemo-arterial-flow {
   animation: flow-dash 1.2s linear infinite;
 }
@@ -1089,7 +1274,24 @@ body {
 
 .metrics-grid {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.65rem;
+}
+
+.metric-item {
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--surface-inset);
+}
+
+.metric-item:hover,
+.metric-item:focus-visible,
+.metric-item.is-selected,
+.muscle-status-box.hemo-clickable:hover,
+.muscle-status-box.hemo-clickable:focus-visible,
+.muscle-status-box.is-selected {
+  border-color: var(--accent-color);
+  outline: none;
 }
 
 .metric-item progress {
@@ -1131,6 +1333,52 @@ body {
   align-items: center;
 }
 
+.symptom-checker-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.symptom-checker-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.symptom-checker-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.symptom-chip {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-inset);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.symptom-chip:hover {
+  border-color: var(--accent-color);
+}
+
+.symptom-chip.is-active {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  border-color: var(--accent-color);
+}
+
 .pathology-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -1145,12 +1393,15 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  cursor: pointer;
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
-.pathology-card:hover {
+.pathology-card:hover,
+.pathology-card:focus-visible {
   border-color: var(--accent-color);
   transform: translateY(-2px);
+  outline: none;
 }
 
 .pathology-card.is-urgent {
@@ -1224,11 +1475,97 @@ body {
   padding: 1.2rem;
 }
 
+.exam-visual-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.exam-visual-header h3 {
+  margin: 0;
+}
+
+.exam-checklist-status {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.exam-anatomy-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.exam-anatomy-controls .is-active {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  border-color: var(--accent-color);
+}
+
+#exam-progress {
+  width: 100%;
+  height: 9px;
+  margin-bottom: 0.85rem;
+}
+
+.exam-svg-box {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#svg-self-exam {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.exam-svg-label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--text);
+}
+
+.exam-zone {
+  cursor: pointer;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.exam-zone:hover,
+.exam-zone:focus-visible {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-color) 75%, transparent));
+  outline: none;
+}
+
+.exam-zone.is-active {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent-color) 95%, transparent));
+}
+
+#exam-foreskin-overlay {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+#svg-self-exam.is-retracted #exam-foreskin-overlay {
+  transform: translateX(-56px) scaleX(0.65);
+  transform-origin: 365px 110px;
+}
+
+#svg-self-exam.is-circumcised #exam-foreskin-overlay {
+  display: none;
+}
+
 .exam-steps {
   margin: 0.75rem 0 1.25rem;
-  padding-left: 1.25rem;
+  padding-left: 0;
+  list-style: none;
   display: grid;
-  gap: 0.8rem;
+  gap: 0.7rem;
 }
 
 .exam-steps li {
@@ -1236,6 +1573,27 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.exam-steps li:hover,
+.exam-steps li.is-active {
+  border-color: var(--accent-color);
+}
+
+.exam-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.exam-step-check {
+  margin-top: 0.25rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .exam-steps strong {
@@ -1261,6 +1619,15 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.compare-card:hover,
+.compare-card:focus-visible,
+.compare-card.is-selected {
+  border-color: var(--accent-color);
+  outline: none;
 }
 
 .compare-card h5 {
@@ -1283,16 +1650,36 @@ body {
 }
 
 .red-flags-banner h4 {
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.6rem;
   color: var(--urgent-border);
 }
 
-.red-flags-banner ul {
-  margin: 0;
-  padding-left: 1.15rem;
-  font-size: 0.87rem;
-  display: grid;
-  gap: 0.4rem;
+.red-flag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.red-flag-chip {
+  font: inherit;
+  font-size: 0.83rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-card);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.red-flag-chip.is-urgent {
+  border-color: var(--urgent-border);
+  color: var(--urgent-border);
+}
+
+.red-flag-chip:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
 }
 
 .quiz-header {
@@ -1508,7 +1895,10 @@ dialog::backdrop {
   padding: 0.9rem 1.35rem;
   border-top: 1px solid var(--border-subtle);
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 /* ==========================================================================

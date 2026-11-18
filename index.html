@@ -36,10 +36,10 @@
         </div>
       </div>
 
-      <aside class="medical-notice" aria-label="Medische disclaimer">
-        <strong>Educatief referentiemiddel</strong>
-        <span>Vervangt geen arts. Bij acute pijn (&gt;4 uur erectie of beklemde voorhuid): direct spoedzorg.</span>
-      </aside>
+      <button type="button" class="medical-notice medical-notice-btn" id="btn-quick-urgent" title="Klik om direct spoedsignalen te openen">
+        <strong>Educatief referentiemiddel · Spoedwijzer ↗</strong>
+        <span>Vervangt geen arts. Klik hier voor acute alarmsignalen (&gt;4u erectie / parafimose).</span>
+      </button>
     </div>
 
     <nav class="nav-bar" aria-label="Hoofdmodules">
@@ -59,11 +59,16 @@
         <div class="panel-header">
           <div>
             <h2>Interactieve Anatomische Atlas</h2>
-            <p>Klik op een structuur in de medische doorsnede of kies uit de index om histologie, vascularisatie, innervatie en kliniek te inspecteren.</p>
+            <p>Beweeg over en klik op élk onderdeel, vat, zenuw, label of oriëntatieterm in de doorsnede om histologie, doorbloeding en kliniek te inspecteren.</p>
           </div>
-          <div class="view-switcher" role="group" aria-label="Doorsnede-weergave">
-            <button type="button" class="view-btn is-active" data-view="sagittal" aria-pressed="true">Sagittale doorsnede (Lengte)</button>
-            <button type="button" class="view-btn" data-view="transverse" aria-pressed="false">Transversale doorsnede (Schacht)</button>
+          <div class="atlas-header-controls">
+            <button type="button" class="btn-ghost state-toggle-btn" id="atlas-state-toggle" aria-pressed="false">
+              Staat: Flaccide (Rust)
+            </button>
+            <div class="view-switcher" role="group" aria-label="Doorsnede-weergave">
+              <button type="button" class="view-btn is-active" data-view="sagittal" aria-pressed="true">Sagittale doorsnede (Lengte)</button>
+              <button type="button" class="view-btn" data-view="transverse" aria-pressed="false">Transversale doorsnede (Schacht)</button>
+            </div>
           </div>
         </div>
 
@@ -101,9 +106,10 @@
             </div>
 
             <div class="svg-viewport" id="svg-viewport">
+              <div class="svg-tooltip" id="svg-tooltip" hidden role="status"></div>
               <div class="svg-zoom-frame" id="svg-zoom-frame">
                 <!-- SAGITTALE DOORSNEDE SVG -->
-                <svg id="svg-sagittal" class="anatomy-svg" viewBox="0 0 880 500" role="img" aria-label="Sagittale medische doorsnede van de penis met zwellichamen, plasbuis, bloedvaten, zenuwen en fasciën">
+                <svg id="svg-sagittal" class="anatomy-svg" viewBox="0 0 880 500" role="img" aria-label="Sagittale medische doorsnede van de penis met alle klikbare anatomische structuren">
                   <defs>
                     <pattern id="trabecular-cavernosum" width="16" height="16" patternUnits="userSpaceOnUse">
                       <rect width="16" height="16" fill="var(--svg-cavernosum-bg)"/>
@@ -126,59 +132,88 @@
                     </marker>
                   </defs>
 
-                  <!-- Oriëntatie-assen -->
-                  <g class="svg-orientation" aria-hidden="true">
-                    <text x="28" y="28" class="orient-text">PROXIMAAL (Bekken / Wortel)</text>
-                    <text x="852" y="28" text-anchor="end" class="orient-text">DISTAAL (Eikel / Meatus)</text>
-                    <text x="440" y="28" text-anchor="middle" class="orient-badge">DORSAAL (Rugzijde)</text>
-                    <text x="440" y="486" text-anchor="middle" class="orient-badge">VENTRAAL (Onderzijde)</text>
+                  <!-- Klikbare Oriëntatie-assen -->
+                  <g class="svg-orientation">
+                    <g class="orient-clickable" data-orient="proximaal" tabindex="0" role="button" aria-label="Oriëntatie: Proximaal">
+                      <rect x="20" y="10" width="196" height="24" rx="6" fill="transparent"/>
+                      <text x="28" y="26" class="orient-text">PROXIMAAL (Bekken / Wortel)</text>
+                    </g>
+                    <g class="orient-clickable" data-orient="distaal" tabindex="0" role="button" aria-label="Oriëntatie: Distaal">
+                      <rect x="676" y="10" width="184" height="24" rx="6" fill="transparent"/>
+                      <text x="852" y="26" text-anchor="end" class="orient-text">DISTAAL (Eikel / Meatus)</text>
+                    </g>
+                    <g class="orient-clickable" data-orient="dorsaal" tabindex="0" role="button" aria-label="Oriëntatie: Dorsaal">
+                      <rect x="355" y="10" width="170" height="24" rx="6" fill="transparent"/>
+                      <text x="440" y="26" text-anchor="middle" class="orient-badge">DORSAAL (Rugzijde)</text>
+                    </g>
+                    <g class="orient-clickable" data-orient="ventraal" tabindex="0" role="button" aria-label="Oriëntatie: Ventraal">
+                      <rect x="350" y="468" width="180" height="24" rx="6" fill="transparent"/>
+                      <text x="440" y="484" text-anchor="middle" class="orient-badge">VENTRAAL (Onderzijde)</text>
+                    </g>
                   </g>
 
-                  <!-- Anatomische achtergrond: Schaambeen & Bekkenreferentie -->
-                  <g class="svg-context" aria-hidden="true">
-                    <!-- Os pubis (Symphysis pubica doorsnede) -->
-                    <path d="M88 68 C135 58 178 76 184 126 C188 158 164 176 122 174 C82 172 64 142 66 108 C67 84 74 72 88 68 Z" fill="url(#bone-trabecular)" stroke="var(--svg-bone-stroke)" stroke-width="2"/>
-                    <text x="124" y="122" text-anchor="middle" class="svg-subtle-label">Os pubis</text>
-                    <!-- Prostaat / blaashals hint -->
-                    <path d="M40 245 C72 232 110 248 118 286 C125 322 92 356 44 352" fill="var(--svg-context-soft)" stroke="var(--border-strong)" stroke-width="1.4" stroke-dasharray="4 3"/>
-                    <text x="68" y="284" text-anchor="middle" class="svg-subtle-label">Bekken-</text>
-                    <text x="68" y="299" text-anchor="middle" class="svg-subtle-label">bodem</text>
-                  </g>
-
-                  <!-- LAAG: FASCIËN & HUID -->
+                  <!-- Klikbare Bekkenstructuren (Os pubis & Bekkenbodemspieren) -->
                   <g class="svg-layer" data-layer="fascia">
+                    <!-- Os pubis (Symphysis pubica doorsnede) -->
+                    <g class="anat-part" data-structure="os-pubis" tabindex="0" role="button" aria-label="Schaambeen en Symphysis pubica">
+                      <path d="M88 68 C135 58 178 76 184 126 C188 158 164 176 122 174 C82 172 64 142 66 108 C67 84 74 72 88 68 Z"
+                        fill="url(#bone-trabecular)" stroke="var(--svg-bone-stroke)" stroke-width="2"/>
+                      <text x="124" y="122" text-anchor="middle" class="svg-subtle-label">Os pubis</text>
+                    </g>
+
                     <!-- Buitenste huidcontour (Cutis & Tunica dartos) -->
-                    <path d="M180 176 C295 162 520 162 665 168 C705 169 728 162 752 164 C788 168 815 196 820 228 C824 252 805 270 788 274 L735 280 C710 326 676 340 618 340 C480 340 315 344 195 362 C160 368 135 390 105 402" fill="var(--svg-skin-fill)" stroke="var(--svg-skin-stroke)" stroke-width="2.5"/>
+                    <path class="anat-part" data-structure="cutis-dartos" tabindex="0" role="button" aria-label="Penishuid en Tunica dartos"
+                      d="M180 176 C295 162 520 162 665 168 C705 169 728 162 752 164 C788 168 815 196 820 228 C824 252 805 270 788 274 L735 280 C710 326 676 340 618 340 C480 340 315 344 195 362 C160 368 135 390 105 402 L105 368 L175 210 Z"
+                      fill="var(--svg-skin-fill)" stroke="var(--svg-skin-stroke)" stroke-width="3"/>
 
                     <!-- Ligamentum suspensorium penis -->
                     <path class="anat-part" data-structure="ligamentum-suspensorium" tabindex="0" role="button" aria-label="Ophangband (Ligamentum suspensorium penis)"
                       d="M148 168 L228 184 L208 228 L138 190 Z"
                       fill="var(--svg-ligament-fill)" stroke="var(--cat-fascia)" stroke-width="2"/>
+                  </g>
 
+                  <!-- Bekkenbodemspieren & Bulbusbasis -->
+                  <g class="svg-layer" data-layer="erectile">
+                    <g class="anat-part" data-structure="bekkenbodem-spieren" tabindex="0" role="button" aria-label="Bekkenbodemspieren (M. ischiocavernosus en M. bulbospongiosus)">
+                      <path d="M38 242 C72 228 112 246 122 288 C130 330 98 378 46 376 C30 356 26 286 38 242 Z"
+                        fill="var(--svg-context-soft)" stroke="var(--cat-erectile)" stroke-width="1.8" stroke-dasharray="5 3"/>
+                      <text x="72" y="284" text-anchor="middle" class="svg-subtle-label">Bekken-</text>
+                      <text x="72" y="299" text-anchor="middle" class="svg-subtle-label">bodem</text>
+                    </g>
+                  </g>
+
+                  <!-- LAAG: FASCIËN & VOORHUID (met brede klikstroken) -->
+                  <g class="svg-layer" data-layer="fascia">
                     <!-- Fascia van Buck (Diepe penisfascie) -->
-                    <path class="anat-part" data-structure="fascia-buck" tabindex="0" role="button" aria-label="Diepe penisfascie (Fascia van Buck)"
-                      d="M196 184 C320 174 525 174 662 180 C680 181 690 190 692 206 L690 316 C684 328 665 332 630 332 C480 332 315 334 195 348"
-                      fill="none" stroke="var(--cat-fascia)" stroke-width="4" stroke-dasharray="8 3"/>
+                    <g class="anat-part hit-stroke-group" data-structure="fascia-buck" tabindex="0" role="button" aria-label="Diepe penisfascie (Fascia van Buck)">
+                      <path class="svg-hit-area" d="M196 184 C320 174 525 174 662 180 C680 181 690 190 692 206 L690 316 C684 328 665 332 630 332 C480 332 315 334 195 348"
+                        fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M196 184 C320 174 525 174 662 180 C680 181 690 190 692 206 L690 316 C684 328 665 332 630 332 C480 332 315 334 195 348"
+                        fill="none" stroke="var(--cat-fascia)" stroke-width="4" stroke-dasharray="8 3"/>
+                    </g>
 
                     <!-- Tunica albuginea rond Corpus cavernosum -->
-                    <path class="anat-part" data-structure="tunica-albuginea" tabindex="0" role="button" aria-label="Bindweefselkapsel (Tunica albuginea)"
-                      d="M168 232 C260 200 475 194 676 200 C698 201 710 218 710 238 C710 258 696 270 672 272 C490 276 290 278 168 290 Z"
-                      fill="none" stroke="var(--svg-tunica-stroke)" stroke-width="7"/>
+                    <g class="anat-part hit-stroke-group" data-structure="tunica-albuginea" tabindex="0" role="button" aria-label="Bindweefselkapsel (Tunica albuginea)">
+                      <path class="svg-hit-area" d="M168 232 C260 200 475 194 676 200 C698 201 710 218 710 238 C710 258 696 270 672 272 C490 276 290 278 168 290 Z"
+                        fill="none" stroke="transparent" stroke-width="18"/>
+                      <path d="M168 232 C260 200 475 194 676 200 C698 201 710 218 710 238 C710 258 696 270 672 272 C490 276 290 278 168 290 Z"
+                        fill="none" stroke="var(--svg-tunica-stroke)" stroke-width="7"/>
+                    </g>
 
                     <!-- Preputium (Voorhuid) & Frenulum -->
-                    <path class="anat-part" data-structure="preputium-frenulum" tabindex="0" role="button" aria-label="Voorhuid en Riempje (Preputium en Frenulum)"
-                      d="M652 168 C706 160 755 156 792 172 C812 180 822 198 814 214 C802 192 764 180 718 185 C696 188 678 196 664 202 Z
-                         M660 336 C694 338 725 326 752 310 C735 304 714 298 696 298 C684 312 672 322 652 328 Z"
-                      fill="var(--svg-preputium-fill)" stroke="var(--cat-fascia)" stroke-width="2"/>
-                    <!-- Frenulum lijntje -->
-                    <path class="anat-part" data-structure="preputium-frenulum" tabindex="0" role="button" aria-label="Frenulum preputii"
-                      d="M698 296 Q724 296 742 308" fill="none" stroke="var(--cat-fascia)" stroke-width="3.2" stroke-linecap="round"/>
+                    <g class="anat-part" data-structure="preputium-frenulum" tabindex="0" role="button" aria-label="Voorhuid en Riempje (Preputium en Frenulum)">
+                      <path d="M652 168 C706 160 755 156 792 172 C812 180 822 198 814 214 C802 192 764 180 718 185 C696 188 678 196 664 202 Z
+                               M660 336 C694 338 725 326 752 310 C735 304 714 298 696 298 C684 312 672 322 652 328 Z"
+                        fill="var(--svg-preputium-fill)" stroke="var(--cat-fascia)" stroke-width="2"/>
+                      <path class="svg-hit-area" d="M698 296 Q724 296 742 308" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M698 296 Q724 296 742 308" fill="none" stroke="var(--cat-fascia)" stroke-width="3.2" stroke-linecap="round"/>
+                    </g>
                   </g>
 
                   <!-- LAAG: ERECTIEL WEEFSEL & URETHRA -->
                   <g class="svg-layer" data-layer="erectile">
                     <!-- Corpus cavernosum -->
-                    <path class="anat-part" data-structure="corpus-cavernosum" tabindex="0" role="button" aria-label="Zwellichaam (Corpus cavernosum)"
+                    <path id="sag-cavernosum-shape" class="anat-part" data-structure="corpus-cavernosum" tabindex="0" role="button" aria-label="Zwellichaam (Corpus cavernosum)"
                       d="M172 235 C262 204 475 198 674 204 C693 205 704 220 704 238 C704 255 691 266 670 268 C488 272 292 274 172 286 Z"
                       fill="url(#trabecular-cavernosum)" stroke="var(--cat-erectile)" stroke-width="1.8"/>
 
@@ -188,133 +223,168 @@
                       fill="url(#trabecular-spongiosum)" stroke="var(--cat-erectile)" stroke-width="1.8"/>
 
                     <!-- Glans penis -->
-                    <path class="anat-part" data-structure="glans-penis" tabindex="0" role="button" aria-label="Eikel (Glans penis)"
-                      d="M676 196 C704 182 746 184 782 198 C808 208 820 230 818 252 C816 276 792 296 756 300 C724 303 700 296 684 282 C698 268 708 255 708 238 C708 216 696 202 676 196 Z"
-                      fill="var(--svg-glans-fill)" stroke="var(--cat-erectile)" stroke-width="2"/>
-                    <!-- Corona glandis highlight -->
-                    <path d="M676 198 C684 218 686 254 684 282" fill="none" stroke="var(--cat-erectile)" stroke-width="2.4" stroke-linecap="round" opacity="0.7"/>
+                    <g class="anat-part" data-structure="glans-penis" tabindex="0" role="button" aria-label="Eikel (Glans penis)">
+                      <path d="M676 196 C704 182 746 184 782 198 C808 208 820 230 818 252 C816 276 792 296 756 300 C724 303 700 296 684 282 C698 268 708 255 708 238 C708 216 696 202 676 196 Z"
+                        fill="var(--svg-glans-fill)" stroke="var(--cat-erectile)" stroke-width="2"/>
+                      <path d="M676 198 C684 218 686 254 684 282" fill="none" stroke="var(--cat-erectile)" stroke-width="2.4" stroke-linecap="round" opacity="0.7"/>
+                    </g>
 
-                    <!-- Urethra + Fossa navicularis + Meatus -->
-                    <path class="anat-part" data-structure="urethra" tabindex="0" role="button" aria-label="Plasbuis (Urethra spongiosa en Meatus)"
-                      d="M52 292 C94 295 124 316 172 314 C330 307 520 298 690 295 C724 294 756 286 782 268 C796 258 806 254 817 254"
-                      fill="none" stroke="var(--svg-urethra-wall)" stroke-width="13" stroke-linecap="round"/>
-                    <path class="anat-part" data-structure="urethra" tabindex="0" role="button" aria-label="Plasbuis lumen"
-                      d="M52 292 C94 295 124 316 172 314 C330 307 520 298 690 295 C724 294 756 286 782 268 C796 258 806 254 817 254"
-                      fill="none" stroke="var(--svg-urethra-lumen)" stroke-width="6.5" stroke-linecap="round"/>
-                    <!-- Fossa navicularis verbreding -->
-                    <ellipse cx="786" cy="264" rx="14" ry="7" transform="rotate(-18 786 264)" fill="var(--svg-urethra-lumen)" stroke="var(--svg-urethra-wall)" stroke-width="2.5"/>
+                    <!-- Urethra spongiosa -->
+                    <g class="anat-part hit-stroke-group" data-structure="urethra" tabindex="0" role="button" aria-label="Plasbuis (Urethra spongiosa)">
+                      <path class="svg-hit-area" d="M52 292 C94 295 124 316 172 314 C330 307 520 298 690 295 C724 294 745 288 766 278"
+                        fill="none" stroke="transparent" stroke-width="22"/>
+                      <path d="M52 292 C94 295 124 316 172 314 C330 307 520 298 690 295 C724 294 745 288 766 278"
+                        fill="none" stroke="var(--svg-urethra-wall)" stroke-width="13" stroke-linecap="round"/>
+                      <path d="M52 292 C94 295 124 316 172 314 C330 307 520 298 690 295 C724 294 745 288 766 278"
+                        fill="none" stroke="var(--svg-urethra-lumen)" stroke-width="6.5" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Fossa navicularis & Meatus -->
+                    <g class="anat-part" data-structure="fossa-navicularis-meatus" tabindex="0" role="button" aria-label="Fossa navicularis en Meatus urethrae externus">
+                      <path d="M764 278 C786 266 802 254 817 254" fill="none" stroke="var(--svg-urethra-wall)" stroke-width="13" stroke-linecap="round"/>
+                      <path d="M764 278 C786 266 802 254 817 254" fill="none" stroke="var(--svg-urethra-lumen)" stroke-width="6.5" stroke-linecap="round"/>
+                      <ellipse cx="786" cy="264" rx="16" ry="9" transform="rotate(-18 786 264)" fill="var(--svg-urethra-lumen)" stroke="var(--svg-urethra-wall)" stroke-width="2.5"/>
+                    </g>
                   </g>
 
                   <!-- LAAG: VAATSTELSEL -->
                   <g class="svg-layer" data-layer="vascular">
+                    <!-- Oppervlakkige dorsale vene (buiten Buck's fascia) -->
+                    <g class="anat-part hit-stroke-group" data-structure="vena-dorsalis-superficialis" tabindex="0" role="button" aria-label="Oppervlakkige dorsale penisvene">
+                      <path class="svg-hit-area" d="M210 174 C340 165 510 166 668 172" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M210 174 C340 165 510 166 668 172" fill="none" stroke="var(--cat-venous)" stroke-width="3.2" stroke-dasharray="10 3" stroke-linecap="round" opacity="0.8"/>
+                    </g>
+
                     <!-- Vena dorsalis profunda penis -->
-                    <path class="anat-part" data-structure="vena-dorsalis-profunda" tabindex="0" role="button" aria-label="Diepe dorsale penisvene (Vena dorsalis profunda penis)"
-                      d="M150 198 C295 186 505 185 678 190 C705 192 728 202 746 212"
-                      fill="none" stroke="var(--cat-venous)" stroke-width="5.5" stroke-linecap="round"/>
-                    <!-- Emissaire aftakkingen -->
-                    <path d="M320 202 L332 188 M450 200 L462 186 M580 201 L592 188" fill="none" stroke="var(--cat-venous)" stroke-width="2.4" stroke-linecap="round"/>
+                    <g class="anat-part hit-stroke-group" data-structure="vena-dorsalis-profunda" tabindex="0" role="button" aria-label="Diepe dorsale penisvene (Vena dorsalis profunda penis)">
+                      <path class="svg-hit-area" d="M150 198 C295 186 505 185 678 190 C705 192 728 202 746 212" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M150 198 C295 186 505 185 678 190 C705 192 728 202 746 212" fill="none" stroke="var(--cat-venous)" stroke-width="5.5" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Emissaire & Circumflexe venen -->
+                    <g class="anat-part hit-stroke-group" data-structure="venae-emissariae" tabindex="0" role="button" aria-label="Emissaire en circumflexe venen (Venae emissariae)">
+                      <path class="svg-hit-area" d="M316 206 L334 186 M446 204 L464 184 M576 205 L594 186" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M316 206 L334 186 M446 204 L464 184 M576 205 L594 186" fill="none" stroke="var(--cat-venous)" stroke-width="3.2" stroke-linecap="round"/>
+                    </g>
 
                     <!-- Arteria dorsalis penis -->
-                    <path class="anat-part" data-structure="arteria-dorsalis" tabindex="0" role="button" aria-label="Dorsale penisslagader (Arteria dorsalis penis)"
-                      d="M162 206 C305 194 510 192 686 197 C724 199 758 212 782 228"
-                      fill="none" stroke="var(--cat-vascular)" stroke-width="3.6" stroke-linecap="round" marker-end="url(#arrow-arterial)"/>
+                    <g class="anat-part hit-stroke-group" data-structure="arteria-dorsalis" tabindex="0" role="button" aria-label="Dorsale penisslagader (Arteria dorsalis penis)">
+                      <path class="svg-hit-area" d="M162 206 C305 194 510 192 686 197 C724 199 758 212 782 228" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path id="sag-dorsal-artery" d="M162 206 C305 194 510 192 686 197 C724 199 758 212 782 228" fill="none" stroke="var(--cat-vascular)" stroke-width="3.6" stroke-linecap="round" marker-end="url(#arrow-arterial)"/>
+                    </g>
 
                     <!-- Arteria profunda penis (cavernosa) + Helicine arteriën -->
-                    <g class="anat-part" data-structure="arteria-profunda" tabindex="0" role="button" aria-label="Diepe zwellichaamslagader (Arteria profunda penis en arteriae helicinae)">
-                      <path d="M126 262 C215 244 430 232 678 238"
+                    <g class="anat-part hit-stroke-group" data-structure="arteria-profunda" tabindex="0" role="button" aria-label="Diepe zwellichaamslagader (Arteria profunda penis en arteriae helicinae)">
+                      <path class="svg-hit-area" d="M126 262 C215 244 430 232 678 238" fill="none" stroke="transparent" stroke-width="20"/>
+                      <path id="sag-profunda-artery" d="M126 262 C215 244 430 232 678 238"
                         fill="none" stroke="var(--cat-vascular)" stroke-width="4.2" stroke-linecap="round" marker-end="url(#arrow-arterial)"/>
-                      <!-- Kurkentrekker helicine zijtakjes -->
                       <path d="M265 246 C272 232 258 224 270 216
                                M355 240 C362 226 348 218 360 210
                                M455 236 C462 222 448 215 460 208
                                M555 236 C562 222 548 216 560 209
                                M310 243 C316 256 304 263 314 268
                                M490 236 C496 250 484 257 494 263"
-                        fill="none" stroke="var(--cat-vascular)" stroke-width="2" stroke-linecap="round"/>
+                        fill="none" stroke="var(--cat-vascular)" stroke-width="2.2" stroke-linecap="round"/>
                     </g>
                   </g>
 
                   <!-- LAAG: ZENUWSTELSEL -->
                   <g class="svg-layer" data-layer="neural">
-                    <!-- Nervus dorsalis penis -->
-                    <path class="anat-part" data-structure="nervus-dorsalis" tabindex="0" role="button" aria-label="Dorsale peniszenuw (Nervus dorsalis penis)"
-                      d="M156 184 C300 176 510 176 680 183 C722 187 762 204 794 226"
-                      fill="none" stroke="var(--cat-neural)" stroke-width="3.2" stroke-linecap="round"/>
+                    <g class="anat-part hit-stroke-group" data-structure="nervus-dorsalis" tabindex="0" role="button" aria-label="Dorsale peniszenuw (Nervus dorsalis penis)">
+                      <path class="svg-hit-area" d="M156 184 C300 176 510 176 680 183 C722 187 762 204 794 226" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M156 184 C300 176 510 176 680 183 C722 187 762 204 794 226"
+                        fill="none" stroke="var(--cat-neural)" stroke-width="3.2" stroke-linecap="round"/>
+                    </g>
 
-                    <!-- Nervi cavernosi (autonoom uit plexus pelvicus) -->
-                    <path class="anat-part" data-structure="nervi-cavernosi" tabindex="0" role="button" aria-label="Caverneuze zenuwen (Nervi cavernosi)"
-                      d="M52 258 C108 250 154 246 210 248 M140 250 C172 260 225 260 278 256 M168 248 C210 226 260 222 308 222"
-                      fill="none" stroke="var(--cat-neural)" stroke-width="2.5" stroke-dasharray="5 3" stroke-linecap="round"/>
+                    <g class="anat-part hit-stroke-group" data-structure="nervi-cavernosi" tabindex="0" role="button" aria-label="Caverneuze zenuwen (Nervi cavernosi)">
+                      <path class="svg-hit-area" d="M52 258 C108 250 154 246 210 248 M140 250 C172 260 225 260 278 256 M168 248 C210 226 260 222 308 222" fill="none" stroke="transparent" stroke-width="16"/>
+                      <path d="M52 258 C108 250 154 246 210 248 M140 250 C172 260 225 260 278 256 M168 248 C210 226 260 222 308 222"
+                        fill="none" stroke="var(--cat-neural)" stroke-width="2.5" stroke-dasharray="5 3" stroke-linecap="round"/>
+                    </g>
                   </g>
 
-                  <!-- LAAG: ANATOMISCHE LABELS -->
+                  <!-- LAAG: ANATOMISCHE LABELS (allemaal klikbaar & toetsenbord-focusbaar) -->
                   <g class="svg-layer svg-labels" data-layer="labels">
-                    <!-- Leader lines + text badges -->
-                    <g class="label-callout" data-target="ligamentum-suspensorium">
+                    <g class="label-callout" data-target="os-pubis" tabindex="0" role="button" aria-label="Label: Os pubis">
+                      <line x1="112" y1="78" x2="88" y2="54"/>
+                      <circle cx="112" cy="78" r="3.5"/>
+                      <text x="86" y="48" text-anchor="middle">Os pubis</text>
+                    </g>
+                    <g class="label-callout" data-target="ligamentum-suspensorium" tabindex="0" role="button" aria-label="Label: Ligamentum suspensorium">
                       <line x1="185" y1="188" x2="225" y2="90"/>
                       <circle cx="185" cy="188" r="3.5"/>
                       <text x="230" y="94">1. Lig. suspensorium</text>
                     </g>
-                    <g class="label-callout" data-target="nervus-dorsalis">
+                    <g class="label-callout" data-target="nervus-dorsalis" tabindex="0" role="button" aria-label="Label: Nervus dorsalis penis">
                       <line x1="365" y1="176" x2="365" y2="90"/>
                       <circle cx="365" cy="176" r="3.5"/>
                       <text x="365" y="82" text-anchor="middle">2. N. dorsalis penis</text>
                     </g>
-                    <g class="label-callout" data-target="vena-dorsalis-profunda">
+                    <g class="label-callout" data-target="vena-dorsalis-profunda" tabindex="0" role="button" aria-label="Label: Vena dorsalis profunda">
                       <line x1="485" y1="186" x2="515" y2="112"/>
                       <circle cx="485" cy="186" r="3.5"/>
                       <text x="520" y="116">3. V. dorsalis profunda</text>
                     </g>
-                    <g class="label-callout" data-target="arteria-dorsalis">
+                    <g class="label-callout" data-target="arteria-dorsalis" tabindex="0" role="button" aria-label="Label: Arteria dorsalis penis">
                       <line x1="600" y1="194" x2="640" y2="92"/>
                       <circle cx="600" cy="194" r="3.5"/>
                       <text x="644" y="96">4. A. dorsalis penis</text>
                     </g>
-                    <g class="label-callout" data-target="preputium-frenulum">
+                    <g class="label-callout" data-target="preputium-frenulum" tabindex="0" role="button" aria-label="Label: Preputium (Voorhuid)">
                       <line x1="762" y1="172" x2="778" y2="122"/>
                       <circle cx="762" cy="172" r="3.5"/>
                       <text x="778" y="114" text-anchor="middle">5. Preputium (Voorhuid)</text>
                     </g>
-                    <g class="label-callout" data-target="glans-penis">
+                    <g class="label-callout" data-target="glans-penis" tabindex="0" role="button" aria-label="Label: Glans penis">
                       <line x1="775" y1="240" x2="835" y2="215"/>
                       <circle cx="775" cy="240" r="3.5"/>
                       <text x="838" y="219">6. Glans</text>
                     </g>
-                    <g class="label-callout" data-target="urethra">
+                    <g class="label-callout" data-target="fossa-navicularis-meatus" tabindex="0" role="button" aria-label="Label: Fossa navicularis en Meatus">
                       <line x1="812" y1="255" x2="835" y2="275"/>
                       <circle cx="812" cy="255" r="3.5"/>
                       <text x="838" y="279">7. Meatus</text>
                     </g>
-                    <g class="label-callout" data-target="corpus-cavernosum">
+                    <g class="label-callout" data-target="corpus-cavernosum" tabindex="0" role="button" aria-label="Label: Corpus cavernosum">
                       <line x1="395" y1="224" x2="355" y2="138"/>
                       <circle cx="395" cy="224" r="3.5"/>
                       <text x="355" y="130" text-anchor="middle">8. Corpus cavernosum</text>
                     </g>
-                    <g class="label-callout" data-target="arteria-profunda">
+                    <g class="label-callout" data-target="arteria-profunda" tabindex="0" role="button" aria-label="Label: Arteria profunda en arteriae helicinae">
                       <line x1="420" y1="238" x2="435" y2="412"/>
                       <circle cx="420" cy="238" r="3.5"/>
                       <text x="435" y="428" text-anchor="middle">9. A. profunda &amp; aa. helicinae</text>
                     </g>
-                    <g class="label-callout" data-target="tunica-albuginea">
+                    <g class="label-callout" data-target="tunica-albuginea" tabindex="0" role="button" aria-label="Label: Tunica albuginea">
                       <line x1="560" y1="272" x2="590" y2="410"/>
                       <circle cx="560" cy="272" r="3.5"/>
                       <text x="595" y="426">10. Tunica albuginea</text>
                     </g>
-                    <g class="label-callout" data-target="corpus-spongiosum">
+                    <g class="label-callout" data-target="corpus-spongiosum" tabindex="0" role="button" aria-label="Label: Corpus spongiosum">
                       <line x1="255" y1="322" x2="230" y2="410"/>
                       <circle cx="255" cy="322" r="3.5"/>
                       <text x="230" y="426" text-anchor="middle">11. Corpus spongiosum</text>
                     </g>
-                    <g class="label-callout" data-target="nervi-cavernosi">
+                    <g class="label-callout" data-target="nervi-cavernosi" tabindex="0" role="button" aria-label="Label: Nervi cavernosi">
                       <line x1="168" y1="254" x2="115" y2="435"/>
                       <circle cx="168" cy="254" r="3.5"/>
                       <text x="115" y="451" text-anchor="middle">12. Nn. cavernosi</text>
+                    </g>
+                    <g class="label-callout" data-target="bekkenbodem-spieren" tabindex="0" role="button" aria-label="Label: Bekkenbodemspieren">
+                      <line x1="72" y1="358" x2="65" y2="405"/>
+                      <circle cx="72" cy="358" r="3.5"/>
+                      <text x="65" y="420" text-anchor="middle">13. Bekkenbodem</text>
+                    </g>
+                    <g class="label-callout" data-target="cutis-dartos" tabindex="0" role="button" aria-label="Label: Cutis en Tunica dartos">
+                      <line x1="680" y1="336" x2="732" y2="392"/>
+                      <circle cx="680" cy="336" r="3.5"/>
+                      <text x="736" y="396">14. Cutis &amp; Dartos</text>
                     </g>
                   </g>
                 </svg>
 
                 <!-- TRANSVERSALE DOORSNEDE SVG (verborgen wanneer Sagittaal actief is) -->
-                <svg id="svg-transverse" class="anatomy-svg" viewBox="0 0 720 500" hidden role="img" aria-label="Transversale dwarsdoorsnede van de penisschacht met zwellichamen, septum, tunica albuginea, fascia van Buck en dorsale vaat-zenuwstreng">
+                <svg id="svg-transverse" class="anatomy-svg" viewBox="0 0 720 500" hidden role="img" aria-label="Transversale dwarsdoorsnede van de penisschacht met alle klikbare structuren">
                   <defs>
                     <pattern id="trans-cavernosum" width="14" height="14" patternUnits="userSpaceOnUse">
                       <rect width="14" height="14" fill="var(--svg-cavernosum-bg)"/>
@@ -327,34 +397,50 @@
                     </pattern>
                   </defs>
 
-                  <g class="svg-orientation" aria-hidden="true">
-                    <text x="360" y="28" text-anchor="middle" class="orient-badge">DORSAAL (12 uur)</text>
-                    <text x="360" y="486" text-anchor="middle" class="orient-badge">VENTRAAL (6 uur)</text>
-                    <text x="64" y="250" text-anchor="middle" class="orient-text">LATERAAL (L)</text>
-                    <text x="656" y="250" text-anchor="middle" class="orient-text">LATERAAL (R)</text>
+                  <g class="svg-orientation">
+                    <g class="orient-clickable" data-orient="dorsaal" tabindex="0" role="button" aria-label="Oriëntatie: Dorsaal">
+                      <rect x="280" y="10" width="160" height="24" rx="6" fill="transparent"/>
+                      <text x="360" y="26" text-anchor="middle" class="orient-badge">DORSAAL (12 uur)</text>
+                    </g>
+                    <g class="orient-clickable" data-orient="ventraal" tabindex="0" role="button" aria-label="Oriëntatie: Ventraal">
+                      <rect x="280" y="468" width="160" height="24" rx="6" fill="transparent"/>
+                      <text x="360" y="484" text-anchor="middle" class="orient-badge">VENTRAAL (6 uur)</text>
+                    </g>
+                    <g class="orient-clickable" data-orient="lateraal" tabindex="0" role="button" aria-label="Oriëntatie: Lateraal links">
+                      <rect x="12" y="232" width="104" height="26" rx="6" fill="transparent"/>
+                      <text x="64" y="250" text-anchor="middle" class="orient-text">LATERAAL (L)</text>
+                    </g>
+                    <g class="orient-clickable" data-orient="lateraal" tabindex="0" role="button" aria-label="Oriëntatie: Lateraal rechts">
+                      <rect x="604" y="232" width="104" height="26" rx="6" fill="transparent"/>
+                      <text x="656" y="250" text-anchor="middle" class="orient-text">LATERAAL (R)</text>
+                    </g>
                   </g>
 
                   <!-- LAAG: FASCIËN & HUID -->
                   <g class="svg-layer" data-layer="fascia">
                     <!-- Buitenste Cutis + Tunica dartos (oppervlakkige fascie) -->
-                    <path d="M360 72 C468 72 528 134 528 228 C528 310 472 344 432 378 C406 400 392 426 360 426 C328 426 314 400 288 378 C248 344 192 310 192 228 C192 134 252 72 360 72 Z"
-                      fill="var(--svg-skin-fill)" stroke="var(--svg-skin-stroke)" stroke-width="3"/>
-                    <!-- Subcutaan weefsel ring -->
-                    <path d="M360 88 C454 88 510 144 510 228 C510 302 460 332 422 365 C398 386 386 410 360 410 C334 410 322 386 298 365 C260 332 210 302 210 228 C210 144 266 88 360 88 Z"
-                      fill="var(--svg-subcutis-fill)" stroke="var(--border-strong)" stroke-width="1.2" stroke-dasharray="4 3"/>
+                    <g class="anat-part" data-structure="cutis-dartos" tabindex="0" role="button" aria-label="Penishuid en Tunica dartos">
+                      <path d="M360 72 C468 72 528 134 528 228 C528 310 472 344 432 378 C406 400 392 426 360 426 C328 426 314 400 288 378 C248 344 192 310 192 228 C192 134 252 72 360 72 Z"
+                        fill="var(--svg-skin-fill)" stroke="var(--svg-skin-stroke)" stroke-width="3"/>
+                      <path d="M360 88 C454 88 510 144 510 228 C510 302 460 332 422 365 C398 386 386 410 360 410 C334 410 322 386 298 365 C260 332 210 302 210 228 C210 144 266 88 360 88 Z"
+                        fill="var(--svg-subcutis-fill)" stroke="var(--border-strong)" stroke-width="1.2" stroke-dasharray="4 3"/>
+                    </g>
 
-                    <!-- Fascia van Buck (Diepe penisfascie) rondom zowel corpora cavernosa als corpus spongiosum -->
-                    <path class="anat-part" data-structure="fascia-buck" tabindex="0" role="button" aria-label="Diepe penisfascie (Fascia van Buck)"
-                      d="M360 112 C446 112 492 158 492 230 C492 290 448 318 418 346 C400 364 390 398 360 398 C330 398 320 364 302 346 C272 318 228 290 228 230 C228 158 274 112 360 112 Z"
-                      fill="var(--svg-buck-fill)" stroke="var(--cat-fascia)" stroke-width="5"/>
+                    <!-- Fascia van Buck (Diepe penisfascie) -->
+                    <g class="anat-part" data-structure="fascia-buck" tabindex="0" role="button" aria-label="Diepe penisfascie (Fascia van Buck)">
+                      <path d="M360 112 C446 112 492 158 492 230 C492 290 448 318 418 346 C400 364 390 398 360 398 C330 398 320 364 302 346 C272 318 228 290 228 230 C228 158 274 112 360 112 Z"
+                        fill="var(--svg-buck-fill)" stroke="var(--cat-fascia)" stroke-width="5"/>
+                    </g>
 
-                    <!-- Tunica albuginea (dikke ovale dubbellagige mantel rond beide corpora cavernosa) -->
-                    <path class="anat-part" data-structure="tunica-albuginea" tabindex="0" role="button" aria-label="Bindweefselkapsel (Tunica albuginea)"
-                      d="M242 224 C242 162 296 146 360 156 C424 146 478 162 478 224 C478 282 430 304 360 296 C290 304 242 282 242 224 Z"
-                      fill="var(--svg-tunica-fill)" stroke="var(--svg-tunica-stroke)" stroke-width="7"/>
+                    <!-- Tunica albuginea -->
+                    <g class="anat-part" data-structure="tunica-albuginea" tabindex="0" role="button" aria-label="Bindweefselkapsel (Tunica albuginea)">
+                      <path d="M242 224 C242 162 296 146 360 156 C424 146 478 162 478 224 C478 282 430 304 360 296 C290 304 242 282 242 224 Z"
+                        fill="var(--svg-tunica-fill)" stroke="var(--svg-tunica-stroke)" stroke-width="7"/>
+                    </g>
 
-                    <!-- Septum pectiniforme (tussenschot met vensteropeningen) -->
+                    <!-- Septum pectiniforme -->
                     <g class="anat-part" data-structure="septum-penis" tabindex="0" role="button" aria-label="Tussenschot (Septum pectiniforme)">
+                      <rect x="350" y="156" width="20" height="140" fill="transparent"/>
                       <line x1="360" y1="158" x2="360" y2="188" stroke="var(--svg-tunica-stroke)" stroke-width="7" stroke-linecap="round"/>
                       <line x1="360" y1="204" x2="360" y2="236" stroke="var(--svg-tunica-stroke)" stroke-width="7" stroke-linecap="round"/>
                       <line x1="360" y1="252" x2="360" y2="294" stroke="var(--svg-tunica-stroke)" stroke-width="7" stroke-linecap="round"/>
@@ -363,7 +449,6 @@
 
                   <!-- LAAG: ERECTIEL WEEFSEL & URETHRA -->
                   <g class="svg-layer" data-layer="erectile">
-                    <!-- Linker & Rechter Corpus cavernosum -->
                     <path class="anat-part" data-structure="corpus-cavernosum" tabindex="0" role="button" aria-label="Linker Corpus cavernosum"
                       d="M355 162 C298 154 250 170 250 224 C250 274 294 294 355 288 Z"
                       fill="url(#trans-cavernosum)" stroke="var(--cat-erectile)" stroke-width="1.5"/>
@@ -371,47 +456,64 @@
                       d="M365 162 C422 154 470 170 470 224 C470 274 426 294 365 288 Z"
                       fill="url(#trans-cavernosum)" stroke="var(--cat-erectile)" stroke-width="1.5"/>
 
-                    <!-- Corpus spongiosum -->
                     <ellipse class="anat-part" data-structure="corpus-spongiosum" tabindex="0" role="button" aria-label="Sponslichaam (Corpus spongiosum)"
                       cx="360" cy="348" rx="48" ry="38"
                       fill="url(#trans-spongiosum)" stroke="var(--cat-erectile)" stroke-width="2.2"/>
 
-                    <!-- Urethra (stervormig lumen) -->
-                    <path class="anat-part" data-structure="urethra" tabindex="0" role="button" aria-label="Plasbuis (Urethra)"
-                      d="M348 345 Q360 350 372 345 Q364 352 367 360 Q360 353 353 360 Q356 352 348 345 Z"
-                      fill="var(--svg-urethra-lumen)" stroke="var(--svg-urethra-wall)" stroke-width="3.2" stroke-linejoin="round"/>
+                    <g class="anat-part" data-structure="urethra" tabindex="0" role="button" aria-label="Plasbuis (Urethra)">
+                      <circle cx="360" cy="352" r="18" fill="transparent"/>
+                      <path d="M348 345 Q360 350 372 345 Q364 352 367 360 Q360 353 353 360 Q356 352 348 345 Z"
+                        fill="var(--svg-urethra-lumen)" stroke="var(--svg-urethra-wall)" stroke-width="3.2" stroke-linejoin="round"/>
+                    </g>
                   </g>
 
                   <!-- LAAG: VAATSTELSEL -->
                   <g class="svg-layer" data-layer="vascular">
-                    <!-- Oppervlakkige dorsale vene (buiten Buck's fascia) -->
-                    <circle cx="360" cy="98" r="7" fill="var(--cat-venous)" opacity="0.72" stroke="var(--surface-card)" stroke-width="1.5"/>
+                    <!-- Oppervlakkige dorsale vene -->
+                    <g class="anat-part" data-structure="vena-dorsalis-superficialis" tabindex="0" role="button" aria-label="Oppervlakkige dorsale penisvene">
+                      <circle cx="360" cy="98" r="14" fill="transparent"/>
+                      <circle cx="360" cy="98" r="7" fill="var(--cat-venous)" opacity="0.78" stroke="var(--surface-card)" stroke-width="1.5"/>
+                    </g>
 
-                    <!-- Diepe dorsale vene (mediaal onder Buck's fascia) -->
-                    <circle class="anat-part" data-structure="vena-dorsalis-profunda" tabindex="0" role="button" aria-label="Diepe dorsale penisvene"
-                      cx="360" cy="134" r="10.5" fill="var(--cat-venous)" stroke="var(--surface-card)" stroke-width="2"/>
+                    <!-- Diepe dorsale vene -->
+                    <g class="anat-part" data-structure="vena-dorsalis-profunda" tabindex="0" role="button" aria-label="Diepe dorsale penisvene">
+                      <circle cx="360" cy="134" r="15" fill="transparent"/>
+                      <circle cx="360" cy="134" r="10.5" fill="var(--cat-venous)" stroke="var(--surface-card)" stroke-width="2"/>
+                    </g>
 
                     <!-- Circumflexe & Emissaire venen -->
-                    <path d="M270 170 C276 144 316 134 349 134 M450 170 C444 144 404 134 371 134"
-                      fill="none" stroke="var(--cat-venous)" stroke-width="3" stroke-linecap="round"/>
+                    <g class="anat-part hit-stroke-group" data-structure="venae-emissariae" tabindex="0" role="button" aria-label="Emissaire en circumflexe venen">
+                      <path class="svg-hit-area" d="M270 170 C276 144 316 134 349 134 M450 170 C444 144 404 134 371 134" fill="none" stroke="transparent" stroke-width="14"/>
+                      <path d="M270 170 C276 144 316 134 349 134 M450 170 C444 144 404 134 371 134"
+                        fill="none" stroke="var(--cat-venous)" stroke-width="3" stroke-linecap="round"/>
+                    </g>
 
                     <!-- Gepaarde Arteriae dorsales penis -->
-                    <circle class="anat-part" data-structure="arteria-dorsalis" tabindex="0" role="button" aria-label="Linker dorsale penisslagader"
-                      cx="326" cy="136" r="7.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="1.8"/>
-                    <circle class="anat-part" data-structure="arteria-dorsalis" tabindex="0" role="button" aria-label="Rechter dorsale penisslagader"
-                      cx="394" cy="136" r="7.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="1.8"/>
+                    <g class="anat-part" data-structure="arteria-dorsalis" tabindex="0" role="button" aria-label="Linker dorsale penisslagader">
+                      <circle cx="326" cy="136" r="13" fill="transparent"/>
+                      <circle cx="326" cy="136" r="7.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="1.8"/>
+                    </g>
+                    <g class="anat-part" data-structure="arteria-dorsalis" tabindex="0" role="button" aria-label="Rechter dorsale penisslagader">
+                      <circle cx="394" cy="136" r="13" fill="transparent"/>
+                      <circle cx="394" cy="136" r="7.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="1.8"/>
+                    </g>
 
-                    <!-- Gepaarde Arteriae profundae penis (centraal in corpora cavernosa) -->
-                    <circle class="anat-part" data-structure="arteria-profunda" tabindex="0" role="button" aria-label="Linker diepe zwellichaamslagader (A. profunda penis)"
-                      cx="306" cy="224" r="8.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="2"/>
-                    <circle class="anat-part" data-structure="arteria-profunda" tabindex="0" role="button" aria-label="Rechter diepe zwellichaamslagader (A. profunda penis)"
-                      cx="414" cy="224" r="8.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="2"/>
+                    <!-- Gepaarde Arteriae profundae penis -->
+                    <g class="anat-part" data-structure="arteria-profunda" tabindex="0" role="button" aria-label="Linker diepe zwellichaamslagader">
+                      <circle cx="306" cy="224" r="15" fill="transparent"/>
+                      <circle cx="306" cy="224" r="8.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="2"/>
+                    </g>
+                    <g class="anat-part" data-structure="arteria-profunda" tabindex="0" role="button" aria-label="Rechter diepe zwellichaamslagader">
+                      <circle cx="414" cy="224" r="15" fill="transparent"/>
+                      <circle cx="414" cy="224" r="8.5" fill="var(--cat-vascular)" stroke="var(--surface-card)" stroke-width="2"/>
+                    </g>
                   </g>
 
                   <!-- LAAG: ZENUWSTELSEL -->
                   <g class="svg-layer" data-layer="neural">
-                    <!-- Gepaarde Nervi dorsales penis (10 en 2 uur) -->
                     <g class="anat-part" data-structure="nervus-dorsalis" tabindex="0" role="button" aria-label="Dorsale peniszenuwen (Nervi dorsales penis)">
+                      <circle cx="294" cy="142" r="14" fill="transparent"/>
+                      <circle cx="426" cy="142" r="14" fill="transparent"/>
                       <ellipse cx="294" cy="142" rx="9" ry="6" transform="rotate(-18 294 142)" fill="var(--cat-neural)" stroke="var(--surface-card)" stroke-width="1.5"/>
                       <ellipse cx="426" cy="142" rx="9" ry="6" transform="rotate(18 426 142)" fill="var(--cat-neural)" stroke="var(--surface-card)" stroke-width="1.5"/>
                     </g>
@@ -419,52 +521,67 @@
 
                   <!-- LAAG: LABELS -->
                   <g class="svg-layer svg-labels" data-layer="labels">
-                    <g class="label-callout" data-target="vena-dorsalis-profunda">
+                    <g class="label-callout" data-target="vena-dorsalis-superficialis" tabindex="0" role="button" aria-label="Label: Vena dorsalis superficialis">
+                      <line x1="354" y1="94" x2="210" y2="62"/>
+                      <circle cx="354" cy="94" r="3"/>
+                      <text x="206" y="64" text-anchor="end">V. dorsalis superficialis</text>
+                    </g>
+                    <g class="label-callout" data-target="vena-dorsalis-profunda" tabindex="0" role="button" aria-label="Label: Vena dorsalis profunda">
                       <line x1="360" y1="124" x2="360" y2="56"/>
                       <circle cx="360" cy="124" r="3"/>
                       <text x="360" y="50" text-anchor="middle">V. dorsalis profunda</text>
                     </g>
-                    <g class="label-callout" data-target="arteria-dorsalis">
+                    <g class="label-callout" data-target="arteria-dorsalis" tabindex="0" role="button" aria-label="Label: Arteria dorsalis penis">
                       <line x1="394" y1="130" x2="532" y2="86"/>
                       <circle cx="394" cy="130" r="3"/>
                       <text x="536" y="90">A. dorsalis penis</text>
                     </g>
-                    <g class="label-callout" data-target="nervus-dorsalis">
+                    <g class="label-callout" data-target="nervus-dorsalis" tabindex="0" role="button" aria-label="Label: Nervus dorsalis penis">
                       <line x1="432" y1="142" x2="554" y2="128"/>
                       <circle cx="432" cy="142" r="3"/>
                       <text x="558" y="132">N. dorsalis penis</text>
                     </g>
-                    <g class="label-callout" data-target="fascia-buck">
+                    <g class="label-callout" data-target="venae-emissariae" tabindex="0" role="button" aria-label="Label: Venae emissariae">
+                      <line x1="444" y1="164" x2="558" y2="162"/>
+                      <circle cx="444" cy="164" r="3"/>
+                      <text x="562" y="166">Vv. emissariae / circumflexae</text>
+                    </g>
+                    <g class="label-callout" data-target="fascia-buck" tabindex="0" role="button" aria-label="Label: Fascia van Buck">
                       <line x1="490" y1="205" x2="560" y2="195"/>
                       <circle cx="490" cy="205" r="3"/>
                       <text x="564" y="199">Fascia van Buck</text>
                     </g>
-                    <g class="label-callout" data-target="tunica-albuginea">
+                    <g class="label-callout" data-target="tunica-albuginea" tabindex="0" role="button" aria-label="Label: Tunica albuginea">
                       <line x1="476" y1="248" x2="560" y2="256"/>
                       <circle cx="476" cy="248" r="3"/>
                       <text x="564" y="260">Tunica albuginea</text>
                     </g>
-                    <g class="label-callout" data-target="corpus-cavernosum">
+                    <g class="label-callout" data-target="cutis-dartos" tabindex="0" role="button" aria-label="Label: Cutis en Tunica dartos">
+                      <line x1="518" y1="286" x2="560" y2="305"/>
+                      <circle cx="518" cy="286" r="3"/>
+                      <text x="564" y="309">Cutis &amp; Tunica dartos</text>
+                    </g>
+                    <g class="label-callout" data-target="corpus-cavernosum" tabindex="0" role="button" aria-label="Label: Corpus cavernosum">
                       <line x1="274" y1="202" x2="170" y2="136"/>
                       <circle cx="274" cy="202" r="3"/>
                       <text x="165" y="134" text-anchor="end">Corpus cavernosum</text>
                     </g>
-                    <g class="label-callout" data-target="arteria-profunda">
+                    <g class="label-callout" data-target="arteria-profunda" tabindex="0" role="button" aria-label="Label: Arteria profunda penis">
                       <line x1="298" y1="224" x2="165" y2="215"/>
                       <circle cx="298" cy="224" r="3"/>
                       <text x="160" y="219" text-anchor="end">A. profunda penis</text>
                     </g>
-                    <g class="label-callout" data-target="septum-penis">
+                    <g class="label-callout" data-target="septum-penis" tabindex="0" role="button" aria-label="Label: Septum pectiniforme">
                       <line x1="360" y1="224" x2="178" y2="296"/>
                       <circle cx="360" cy="224" r="3"/>
                       <text x="174" y="300" text-anchor="end">Septum pectiniforme</text>
                     </g>
-                    <g class="label-callout" data-target="corpus-spongiosum">
+                    <g class="label-callout" data-target="corpus-spongiosum" tabindex="0" role="button" aria-label="Label: Corpus spongiosum">
                       <line x1="406" y1="352" x2="546" y2="352"/>
                       <circle cx="406" cy="352" r="3"/>
                       <text x="550" y="356">Corpus spongiosum</text>
                     </g>
-                    <g class="label-callout" data-target="urethra">
+                    <g class="label-callout" data-target="urethra" tabindex="0" role="button" aria-label="Label: Urethra">
                       <line x1="362" y1="358" x2="528" y2="412"/>
                       <circle cx="362" cy="358" r="3"/>
                       <text x="532" y="416">Urethra (lumen)</text>
@@ -478,14 +595,22 @@
           </div>
 
           <aside class="inspector-card" id="anatomy-inspector" aria-live="polite">
-            <div class="inspector-badge-row">
-              <span class="cat-badge" id="insp-category">Categorie</span>
-              <span class="latin-term" id="insp-latin">Latijnse term</span>
+            <div class="inspector-nav-row">
+              <div class="inspector-badge-row">
+                <span class="cat-badge" id="insp-category">Categorie</span>
+                <span class="latin-term" id="insp-latin">Latijnse term</span>
+              </div>
+              <div class="inspector-stepper" role="group" aria-label="Blader door structuren">
+                <button type="button" class="btn-ghost" id="insp-prev" aria-label="Vorige structuur">←</button>
+                <span id="insp-counter" class="insp-counter">1 / 20</span>
+                <button type="button" class="btn-ghost" id="insp-next" aria-label="Volgende structuur">→</button>
+              </div>
             </div>
+
             <h3 id="insp-title">Selecteer een structuur</h3>
             <p class="insp-summary" id="insp-summary"></p>
 
-            <dl class="insp-details">
+            <dl class="insp-details" id="insp-details">
               <div>
                 <dt>Histologie &amp; Opbouw</dt>
                 <dd id="insp-histology"></dd>
@@ -505,6 +630,7 @@
             </dl>
 
             <div class="inspector-actions">
+              <button type="button" class="btn-ghost" id="insp-goto-hemo" hidden>Simuleer in Fysiologie →</button>
               <button type="button" class="btn-primary" id="insp-open-pathology">Gerelateerd ziektebeeld bekijken</button>
             </div>
           </aside>
@@ -518,7 +644,11 @@
         <div class="panel-header">
           <div>
             <h2>Erectiele Hemodynamica &amp; NO/cGMP-Signaalcascade</h2>
-            <p>Simuleer de overgang van flaccide toestand naar rigide erectie en observeer hoe sinusoïdale relaxatie de subtunicale venulen dichtdrukt (het Corporaal Veno-Occlusief Mechanisme).</p>
+            <p>Simuleer de overgang van flaccide toestand naar rigide erectie. Klik op elk bloedvat, elke biochemische stap of elke telemetrie-meter voor directe uitleg en simulatieacties.</p>
+          </div>
+          <div class="hemo-playback-bar">
+            <button type="button" class="btn-primary" id="btn-play-cycle">▶ Speel erectiecyclus af</button>
+            <button type="button" class="btn-ghost" id="btn-stress-pulse">⚡ Sympathische Stress-puls</button>
           </div>
         </div>
 
@@ -552,7 +682,7 @@
 
         <div class="hemo-visual-grid">
           <div class="hemo-svg-card">
-            <svg id="svg-hemodynamics" viewBox="0 0 860 370" role="img" aria-label="Dynamische visualisatie van een caverneuze sinusoïde, veno-occlusie tegen de tunica albuginea en de NO-cGMP-signaalcascade">
+            <svg id="svg-hemodynamics" viewBox="0 0 860 370" role="img" aria-label="Interactieve visualisatie van een caverneuze sinusoïde, veno-occlusie tegen de tunica albuginea en de NO-cGMP-signaalcascade">
               <defs>
                 <marker id="hemo-arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto">
                   <path d="M0 1 L10 5 L0 9 z" fill="currentColor"/>
@@ -562,79 +692,100 @@
               <!-- Linker paneel: Micro-vasculair sinusoïde model -->
               <g>
                 <rect x="14" y="14" width="438" height="342" rx="14" fill="var(--surface-inset)" stroke="var(--border-subtle)"/>
-                <text x="32" y="40" class="hemo-panel-title">Micro-vasculair Veno-Occlusief Model (CVOM)</text>
+                <text x="32" y="40" class="hemo-panel-title">Micro-vasculair Veno-Occlusief Model (klikbaar)</text>
 
                 <!-- Buitenste stugge Tunica albuginea -->
-                <rect id="hemo-tunica" x="44" y="64" width="378" height="30" rx="8" fill="var(--svg-tunica-fill)" stroke="var(--svg-tunica-stroke)" stroke-width="2.5"/>
-                <text x="233" y="84" text-anchor="middle" class="hemo-diagram-label">Tunica albuginea (stug bindweefsel)</text>
+                <g class="hemo-clickable" data-hemo-id="hemo-tunica" tabindex="0" role="button" aria-label="Inspecteer Tunica albuginea">
+                  <rect id="hemo-tunica" x="44" y="64" width="378" height="30" rx="8" fill="var(--svg-tunica-fill)" stroke="var(--svg-tunica-stroke)" stroke-width="2.5"/>
+                  <text x="233" y="84" text-anchor="middle" class="hemo-diagram-label">Tunica albuginea (stug bindweefsel)</text>
+                </g>
 
                 <!-- Subtunicale venulen + schuine vena emissaria -->
-                <g id="hemo-venous-group">
+                <g id="hemo-venous-group" class="hemo-clickable" data-hemo-id="hemo-venule" tabindex="0" role="button" aria-label="Inspecteer Subtunicale venulen en Vena emissaria">
+                  <path d="M78 112 L346 112 L386 50" fill="none" stroke="transparent" stroke-width="24"/>
                   <path id="hemo-venule" d="M78 112 L346 112 L386 50" fill="none" stroke="var(--cat-venous)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
                   <path id="hemo-venous-flow" d="M84 112 L346 112 L382 56" fill="none" stroke="#dbeafe" stroke-width="3" stroke-dasharray="8 10" stroke-linecap="round"/>
+                  <text x="195" y="108" text-anchor="middle" class="hemo-small-label" id="hemo-vein-label">Subtunicale venulen → V. emissaria</text>
                 </g>
-                <text x="195" y="108" text-anchor="middle" class="hemo-small-label" id="hemo-vein-label">Subtunicale venulen → V. emissaria</text>
 
                 <!-- Trabekel gladde spierlaag -->
-                <rect id="hemo-trabecula-box" x="62" y="128" width="342" height="156" rx="22" fill="var(--svg-cavernosum-bg)" stroke="var(--cat-erectile)" stroke-width="2" stroke-dasharray="6 3"/>
-                <text x="233" y="276" text-anchor="middle" class="hemo-small-label" id="hemo-muscle-label">Trabekel glad spierweefsel</text>
+                <g class="hemo-clickable" data-hemo-id="hemo-trabecula" tabindex="0" role="button" aria-label="Inspecteer Trabekulair glad spierweefsel">
+                  <rect id="hemo-trabecula-box" x="62" y="128" width="342" height="156" rx="22" fill="var(--svg-cavernosum-bg)" stroke="var(--cat-erectile)" stroke-width="2" stroke-dasharray="6 3"/>
+                  <text x="233" y="276" text-anchor="middle" class="hemo-small-label" id="hemo-muscle-label">Trabekel glad spierweefsel</text>
+                </g>
 
-                <!-- Caverneuze Sinusoïde (expandeert dynamisch omhoog tegen tunica) -->
-                <ellipse id="hemo-sinusoid" cx="233" cy="206" rx="135" ry="38" fill="var(--svg-sinusoid-fill)" stroke="var(--cat-vascular)" stroke-width="2.5"/>
-                <text id="hemo-sinusoid-text" x="233" y="203" text-anchor="middle" class="hemo-sinusoid-label">Caverneuze sinusoïde</text>
-                <text id="hemo-icp-inline" x="233" y="221" text-anchor="middle" class="hemo-icp-badge">ICP: 10 mmHg</text>
+                <!-- Caverneuze Sinusoïde -->
+                <g class="hemo-clickable is-selected" data-hemo-id="hemo-sinusoid" tabindex="0" role="button" aria-label="Inspecteer Caverneuze sinusoïde">
+                  <ellipse id="hemo-sinusoid" cx="233" cy="206" rx="135" ry="38" fill="var(--svg-sinusoid-fill)" stroke="var(--cat-vascular)" stroke-width="2.5"/>
+                  <text id="hemo-sinusoid-text" x="233" y="203" text-anchor="middle" class="hemo-sinusoid-label">Caverneuze sinusoïde</text>
+                  <text id="hemo-icp-inline" x="233" y="221" text-anchor="middle" class="hemo-icp-badge">ICP: 10 mmHg</text>
+                </g>
 
                 <!-- Arteria helicina (aanvoer onderaan) -->
-                <path id="hemo-artery" d="M128 334 C146 314 118 294 146 276 C168 262 184 244 198 228" fill="none" stroke="var(--cat-vascular)" stroke-width="5" stroke-linecap="round"/>
-                <path id="hemo-arterial-flow" d="M128 334 C146 314 118 294 146 276 C168 262 184 244 198 228" fill="none" stroke="#fee2e2" stroke-width="2.4" stroke-dasharray="6 10" stroke-linecap="round"/>
-                <text x="236" y="328" class="hemo-small-label">Arteria helicina (aanvoer uit a. profunda)</text>
+                <g id="hemo-artery-group" class="hemo-clickable" data-hemo-id="hemo-artery" tabindex="0" role="button" aria-label="Inspecteer Arteria helicina">
+                  <path d="M128 334 C146 314 118 294 146 276 C168 262 184 244 198 228" fill="none" stroke="transparent" stroke-width="22"/>
+                  <path id="hemo-artery" d="M128 334 C146 314 118 294 146 276 C168 262 184 244 198 228" fill="none" stroke="var(--cat-vascular)" stroke-width="5" stroke-linecap="round"/>
+                  <path id="hemo-arterial-flow" d="M128 334 C146 314 118 294 146 276 C168 262 184 244 198 228" fill="none" stroke="#fee2e2" stroke-width="2.4" stroke-dasharray="6 10" stroke-linecap="round"/>
+                  <text x="236" y="328" class="hemo-small-label">Arteria helicina (aanvoer uit a. profunda)</text>
+                </g>
               </g>
 
-              <!-- Rechter paneel: Biochemische NO/cGMP Cascade -->
+              <!-- Rechter paneel: Biochemische NO/cGMP Cascade (alle 6 stappen klikbaar) -->
               <g>
                 <rect x="468" y="14" width="378" height="342" rx="14" fill="var(--surface-inset)" stroke="var(--border-subtle)"/>
-                <text x="486" y="40" class="hemo-panel-title">Biochemische Signaalcascade (NO / cGMP)</text>
+                <text x="486" y="40" class="hemo-panel-title">Biochemische Signaalcascade (klik een stap)</text>
 
-                <!-- Nodes -->
-                <g class="cascade-node" id="node-para">
+                <g class="cascade-node hemo-clickable" id="node-para" data-hemo-id="node-para" tabindex="0" role="button" aria-label="Stap 1: Parasympathicus en Endotheel">
                   <rect x="492" y="58" width="330" height="36" rx="8"/>
                   <text x="657" y="81" text-anchor="middle">1. Parasympathicus (S2–S4) &amp; Endotheel (nNOS/eNOS)</text>
                 </g>
                 <line x1="657" y1="94" x2="657" y2="114" stroke="var(--text-muted)" stroke-width="2"/>
 
-                <g class="cascade-node" id="node-no">
+                <g class="cascade-node hemo-clickable" id="node-no" data-hemo-id="node-no" tabindex="0" role="button" aria-label="Stap 2: Stikstofmonoxide (NO)">
                   <rect x="525" y="114" width="264" height="34" rx="8"/>
                   <text x="657" y="136" text-anchor="middle">2. Stikstofmonoxide (NO) → activeert sGC</text>
                 </g>
                 <line x1="657" y1="148" x2="657" y2="168" stroke="var(--text-muted)" stroke-width="2"/>
 
-                <g class="cascade-node" id="node-cgmp">
+                <g class="cascade-node hemo-clickable" id="node-cgmp" data-hemo-id="node-cgmp" tabindex="0" role="button" aria-label="Stap 3: cGMP second messenger">
                   <rect x="492" y="168" width="176" height="44" rx="8"/>
                   <text x="580" y="188" text-anchor="middle">3. GTP → cGMP</text>
                   <text x="580" y="204" text-anchor="middle" class="node-sub">(Second messenger)</text>
                 </g>
 
-                <!-- PDE5 afbraak zijtak -->
                 <line x1="668" y1="190" x2="704" y2="190" stroke="var(--text-muted)" stroke-width="2" stroke-dasharray="3 3"/>
-                <g class="cascade-node pde5-node" id="node-pde5">
+                <g class="cascade-node pde5-node hemo-clickable" id="node-pde5" data-hemo-id="node-pde5" tabindex="0" role="button" aria-label="PDE5-enzym: klik voor uitleg en schakelen">
                   <rect x="704" y="168" width="124" height="44" rx="8"/>
                   <text x="766" y="187" text-anchor="middle">PDE5-enzym</text>
                   <text x="766" y="203" text-anchor="middle" id="pde5-status-text">cGMP → 5'-GMP</text>
                 </g>
 
                 <line x1="580" y1="212" x2="580" y2="236" stroke="var(--text-muted)" stroke-width="2"/>
-                <g class="cascade-node" id="node-ca">
+                <g class="cascade-node hemo-clickable" id="node-ca" data-hemo-id="node-ca" tabindex="0" role="button" aria-label="Stap 4: PKG-activatie en daling calcium">
                   <rect x="492" y="236" width="330" height="38" rx="8"/>
                   <text x="657" y="260" text-anchor="middle">4. PKG-activatie → Intracellulair Ca²⁺ daalt</text>
                 </g>
 
                 <line x1="657" y1="274" x2="657" y2="296" stroke="var(--text-muted)" stroke-width="2"/>
-                <g class="cascade-node" id="node-relax">
+                <g class="cascade-node hemo-clickable" id="node-relax" data-hemo-id="node-relax" tabindex="0" role="button" aria-label="Stap 5: Gladde spierrelaxatie en vasodilatatie">
                   <rect x="492" y="296" width="330" height="42" rx="8"/>
                   <text x="657" y="322" text-anchor="middle">5. Gladde spierrelaxatie &amp; Vasodilatatie</text>
                 </g>
               </g>
             </svg>
+
+            <!-- Interactief Inspectieblok voor aangeklikt fysiologie-onderdeel -->
+            <div class="hemo-hotspot-inspector" id="hemo-hotspot-inspector" aria-live="polite">
+              <div class="hotspot-header">
+                <div>
+                  <span class="cat-badge" id="hotspot-subtitle">Micro-vasculair CVOM</span>
+                  <h4 id="hotspot-title">Caverneuze sinusoïde (Lacuna)</h4>
+                </div>
+                <button type="button" class="btn-primary" id="hotspot-action">Bekijk Corpus cavernosum in Atlas</button>
+              </div>
+              <p id="hotspot-detail"></p>
+              <p class="hotspot-tip" id="hotspot-tip"></p>
+            </div>
           </div>
 
           <div class="telemetry-panel">
@@ -643,38 +794,38 @@
             <p class="phase-mechanism" id="phase-mechanism"></p>
 
             <div class="metrics-grid">
-              <div class="metric-item">
+              <div class="metric-item hemo-clickable" data-hemo-id="metric-icp" tabindex="0" role="button" aria-label="Inspecteer Intracaverneuze druk">
                 <div class="metric-label">
-                  <span>Intracaverneuze druk (ICP)</span>
+                  <span>Intracaverneuze druk (ICP) ⓘ</span>
                   <strong id="metric-icp">10 mmHg</strong>
                 </div>
                 <progress id="prog-icp" max="170" value="10"></progress>
               </div>
-              <div class="metric-item">
+              <div class="metric-item hemo-clickable" data-hemo-id="metric-flow" tabindex="0" role="button" aria-label="Inspecteer Cavernosa arteriële flow">
                 <div class="metric-label">
-                  <span>Cavernosa arteriële flow</span>
+                  <span>Cavernosa arteriële flow ⓘ</span>
                   <strong id="metric-flow">3 mL/min</strong>
                 </div>
                 <progress id="prog-flow" max="65" value="3"></progress>
               </div>
-              <div class="metric-item">
+              <div class="metric-item hemo-clickable" data-hemo-id="metric-occlusion" tabindex="0" role="button" aria-label="Inspecteer Veneuze occlusie">
                 <div class="metric-label">
-                  <span>Veneuze occlusie (CVOM)</span>
+                  <span>Veneuze occlusie (CVOM) ⓘ</span>
                   <strong id="metric-occlusion">0%</strong>
                 </div>
                 <progress id="prog-occlusion" max="100" value="0"></progress>
               </div>
-              <div class="metric-item">
+              <div class="metric-item hemo-clickable" data-hemo-id="metric-cgmp" tabindex="0" role="button" aria-label="Inspecteer Intracellulair cGMP">
                 <div class="metric-label">
-                  <span>Intracellulair cGMP</span>
+                  <span>Intracellulair cGMP ⓘ</span>
                   <strong id="metric-cgmp">6%</strong>
                 </div>
                 <progress id="prog-cgmp" max="100" value="6"></progress>
               </div>
             </div>
 
-            <div class="muscle-status-box">
-              <span>Trabekelstatus:</span>
+            <div class="muscle-status-box hemo-clickable" data-hemo-id="hemo-trabecula" tabindex="0" role="button" aria-label="Inspecteer Trabekelstatus">
+              <span>Trabekelstatus (klik voor detail):</span>
               <strong id="metric-muscle"></strong>
             </div>
           </div>
@@ -688,7 +839,7 @@
         <div class="panel-header">
           <div>
             <h2>Urologische Pathologie &amp; Goedaardige Varianten</h2>
-            <p>Onderscheid normale anatomische variaties van behandelbare aandoeningen en acute urologische spoedgevallen. Klik op een kaart voor het volledige klinische dossier.</p>
+            <p>Selecteer een symptoom of klik ergens op een ziektebeeldkaart voor het volledige klinische dossier met directe anatomiekoppeling.</p>
           </div>
           <div class="pathology-filters">
             <div class="filter-pills" role="group" aria-label="Filter op categorie">
@@ -701,6 +852,11 @@
           </div>
         </div>
 
+        <div class="symptom-checker-wrap">
+          <span class="symptom-checker-label">Snelle symptoomwijzer:</span>
+          <div class="symptom-checker-bar" id="symptom-checker-bar" role="group" aria-label="Filter op symptoom"></div>
+        </div>
+
         <div class="pathology-grid" id="pathology-grid"></div>
       </div>
     </section>
@@ -711,23 +867,81 @@
         <div class="panel-header">
           <div>
             <h2>Preventief Zelfonderzoek, Hygiëne &amp; Medische Kennistest</h2>
-            <p>Praktische anatomische richtlijnen voor dagelijkse verzorging, herkenning van rode vlaggen en een interactieve medische quiz.</p>
+            <p>Klik op een zone in de inspectiekaart, doorloop de 4 interactieve controlestappen en test je medische kennis in de quiz.</p>
           </div>
         </div>
 
         <div class="exam-quiz-layout">
           <div class="self-exam-col">
-            <h3>Stapsgewijze Inspectie &amp; Zelfonderzoek</h3>
+            <div class="exam-visual-header">
+              <div>
+                <h3>Interactieve Inspectiekaart</h3>
+                <span class="exam-checklist-status" id="exam-progress-text">0 van 4 stappen afgevinkt</span>
+              </div>
+              <div class="exam-anatomy-controls" role="group" aria-label="Anatomievorm en voorhuidstand">
+                <button type="button" class="btn-ghost is-active" id="btn-exam-uncircumcised" aria-pressed="true">Onbesneden</button>
+                <button type="button" class="btn-ghost" id="btn-exam-circumcised" aria-pressed="false">Besneden</button>
+                <button type="button" class="btn-ghost" id="btn-retract-foreskin" aria-pressed="false">Voorhuid terugschuiven</button>
+              </div>
+            </div>
+
+            <progress id="exam-progress" max="4" value="0" aria-label="Voortgang zelfonderzoek"></progress>
+
+            <!-- INTERACTIEVE ZELFONDERZOEK SVG -->
+            <div class="exam-svg-box">
+              <svg id="svg-self-exam" viewBox="0 0 600 220" role="img" aria-label="Interactieve zelfonderzoekskaart met 4 klikbare zones">
+                <!-- Zone 4: Diepe Corpora palpatie (onderliggend langs hele schacht) -->
+                <g class="exam-zone" data-zone="zone-corpora" data-step="4" tabindex="0" role="button" aria-label="Stap 4: Palpatie zwellichamen langs schacht">
+                  <rect x="64" y="68" width="300" height="84" rx="20" fill="var(--svg-cavernosum-bg)" stroke="var(--cat-erectile)" stroke-width="2" stroke-dasharray="5 3"/>
+                  <text x="214" y="172" text-anchor="middle" class="exam-svg-label">4. Diepe palpatie corpora</text>
+                </g>
+
+                <!-- Zone 1: Huid & schacht -->
+                <g class="exam-zone" data-zone="zone-shaft" data-step="1" tabindex="0" role="button" aria-label="Stap 1: Inspectie schacht en huid">
+                  <path d="M58 58 L374 58 C382 58 386 72 386 110 C386 148 382 162 374 162 L58 162 Z"
+                    fill="var(--svg-skin-fill)" fill-opacity="0.72" stroke="var(--svg-skin-stroke)" stroke-width="2.5"/>
+                  <circle cx="155" cy="94" r="2.2" fill="var(--cat-neural)"/>
+                  <circle cx="195" cy="126" r="2.2" fill="var(--cat-neural)"/>
+                  <circle cx="255" cy="88" r="2.2" fill="var(--cat-neural)"/>
+                  <text x="200" y="46" text-anchor="middle" class="exam-svg-label">1. Schachthuid (bijv. Fordyce-plekjes)</text>
+                </g>
+
+                <!-- Zone 2: Glans, Corona & Voorhuid -->
+                <g class="exam-zone" data-zone="zone-glans" data-step="2" tabindex="0" role="button" aria-label="Stap 2: Voorhuid, Eikel en Corona glandis">
+                  <path d="M372 56 C428 48 492 64 514 110 C492 156 428 172 372 164 C384 140 386 80 372 56 Z"
+                    fill="var(--svg-glans-fill)" stroke="var(--cat-erectile)" stroke-width="2.5"/>
+                  <!-- Corona glandis + parelpapels hint -->
+                  <path d="M378 62 C388 86 388 134 378 158" fill="none" stroke="var(--cat-erectile)" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="383" cy="78" r="2.1" fill="#fff" stroke="var(--success)" stroke-width="1"/>
+                  <circle cx="386" cy="96" r="2.1" fill="#fff" stroke="var(--success)" stroke-width="1"/>
+                  <circle cx="386" cy="114" r="2.1" fill="#fff" stroke="var(--success)" stroke-width="1"/>
+                  <circle cx="383" cy="134" r="2.1" fill="#fff" stroke="var(--success)" stroke-width="1"/>
+                  <!-- Voorhuid-overlay (verschuift bij terugschuiven of verdwijnt bij besneden) -->
+                  <path id="exam-foreskin-overlay" d="M364 52 C425 44 486 58 518 86 C500 96 476 92 440 86 C410 82 385 88 374 110 C385 132 410 138 440 134 C476 128 500 124 518 134 C486 162 425 176 364 168 Z"
+                    fill="var(--svg-preputium-fill)" fill-opacity="0.88" stroke="var(--cat-fascia)" stroke-width="2"/>
+                  <text x="442" y="192" text-anchor="middle" class="exam-svg-label">2. Voorhuid, Corona &amp; Glans</text>
+                </g>
+
+                <!-- Zone 3: Meatus & Urinestraal -->
+                <g class="exam-zone" data-zone="zone-meatus" data-step="3" tabindex="0" role="button" aria-label="Stap 3: Plasbuisopening (Meatus)">
+                  <circle cx="510" cy="110" r="22" fill="transparent"/>
+                  <ellipse cx="512" cy="110" rx="5.5" ry="12" fill="var(--svg-urethra-lumen)" stroke="var(--svg-urethra-wall)" stroke-width="3"/>
+                  <path d="M524 110 H566" stroke="var(--accent-color)" stroke-width="2.5" stroke-dasharray="5 4" stroke-linecap="round"/>
+                  <text x="536" y="46" text-anchor="middle" class="exam-svg-label">3. Meatus</text>
+                </g>
+              </svg>
+            </div>
+
             <ol class="exam-steps" id="exam-steps"></ol>
 
             <div class="hygiene-compare">
-              <h4>Anatomisch Hygiëne-overzicht</h4>
+              <h4>Anatomisch Hygiëne-overzicht (klik om weergave te schakelen)</h4>
               <div class="compare-grid">
-                <article class="compare-card">
+                <article class="compare-card is-selected" id="card-uncircumcised" tabindex="0" role="button" aria-pressed="true">
                   <h5>Onbesneden anatomie</h5>
-                  <p>Onder de voorhuid hoopt zich natuurlijk <em>smegma</em> op (afgestoten epitheelcellen en kliersecreties). Schuif bij volwassenen de voorhuid dagelijks zacht terug en spoel met lauw water. Vermijd agressieve zeep om verstoring van de slijmvliesflora en irritatie-balanitis te voorkomen. Bij jonge jongens zit de voorhuid fysiologisch verkleefd: <strong>nooit</strong> geforceerd terugtrekken.</p>
+                  <p>Onder de voorhuid hoopt zich natuurlijk <em>smegma</em> op (afgestoten epitheelcellen en kliersecreties). Schuif bij volwassenen de voorhuid dagelijks zacht terug en spoel met lauw water. Vermijd agressieve zeep. Bij jonge jongens zit de voorhuid fysiologisch verkleefd: <strong>nooit</strong> geforceerd terugtrekken.</p>
                 </article>
-                <article class="compare-card">
+                <article class="compare-card" id="card-circumcised" tabindex="0" role="button" aria-pressed="false">
                   <h5>Besneden anatomie</h5>
                   <p>Na circumcisie ligt de glans continu bloot. Het epitheel van de eikel verhoornt licht ter bescherming. Dagelijkse reiniging met lauw water volstaat; bij droge huid of wrijving kunnen milde, parfumvrije verzachtende zalven comfort bieden.</p>
                 </article>
@@ -735,11 +949,13 @@
             </div>
 
             <div class="red-flags-banner">
-              <h4>Wanneer met spoed of snel een arts raadplegen?</h4>
-              <ul>
-                <li><strong>Direct spoed (112 / SEH):</strong> Erectie &gt;4 uur zonder prikkel (ischemisch priapisme), teruggeschoven voorhuid die klemt en zwelt (parafimose), of plotseling knapgeluid gevolgd door zwelling en erectieverlies (penisfractuur).</li>
-                <li><strong>Huisarts / Uroloog binnen dagen–weken:</strong> Niet-genezend zweertje of bultje (&gt;3 weken), bloed uit de plasbuis, nieuwe kromstand met pijn, of terugkerende ontsteking van voorhuid/eikel.</li>
-              </ul>
+              <h4>Alarmsignalen — klik om direct het medische dossier te openen</h4>
+              <div class="red-flag-chips">
+                <button type="button" class="red-flag-chip is-urgent" data-open-pathology="priapisme">🚨 Erectie &gt;4 uur (Priapisme)</button>
+                <button type="button" class="red-flag-chip is-urgent" data-open-pathology="fimose-parafimose">🚨 Beklemde voorhuid (Parafimose)</button>
+                <button type="button" class="red-flag-chip" data-open-pathology="ziekte-van-peyronie">⚠ Kromstand / knaktrauma (Peyronie / Fractuur)</button>
+                <button type="button" class="red-flag-chip" data-open-pathology="balanitis">⚠ Aanhoudend zweertje / roodheid (Balanitis)</button>
+              </div>
             </div>
           </div>
 
@@ -803,6 +1019,7 @@
       </div>
 
       <footer class="dialog-footer">
+        <button type="button" class="btn-ghost" id="dialog-goto-anatomy">Toon locatie in Anatomie Atlas →</button>
         <form method="dialog">
           <button type="submit" value="close" class="btn-primary">Dossier sluiten</button>
         </form>
